@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorDark">#0a0a0a</color>
+    <color name="colorDarkLight">#212121</color>
+    <color name="colorGray">#303030</color>
+
+    <color name="temp_30">#f1a900</color>
+    <color name="temp_20">#c0da3d</color>
+    <color name="temp_10">#82bec6</color>
+    <color name="temp_0">#009bae</color>
+    <color name="temp_min10">#007581</color>
+    <color name="temp_min30">#004c87</color>
+    <color name="color_direction_wind_row_12">#4b4b4b</color>
+
+
+    <color name="gradient_list_night_end">#0b1453</color>
+
+    <color name="text_list_day">#1d2563</color>
+    <color name="text_list_night">#ffffff</color>
+    <color name="text_list__light_day_5day">#ffffff</color>
+</resources>

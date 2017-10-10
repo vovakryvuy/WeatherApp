@@ -1,0 +1,15 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools"
+       android:shape="rectangle"
+    >
+    <gradient
+        android:startColor="@color/colorPrimaryDark"
+        android:centerX="0.25"
+        android:centerColor="@color/text_list_night"
+        android:endColor="@color/cardview_light_background"
+        android:angle="270"
+        />
+
+    <size tools:height="10dp"
+          tools:width="100dp"/>
+</shape>

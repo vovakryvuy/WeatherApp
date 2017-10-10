@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="wrap_content"
+              android:layout_height="@dimen/height_5day_list"
+              android:orientation="vertical"
+              android:baselineAligned="false">
+    <TextView
+        android:id="@+id/text_data_list_5day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/backdown_2dp_list_5day"
+        android:background="@drawable/gradient_color_date_list5day"
+        android:textAlignment="center"
+        tools:text="Пятниця, 5 Лис"
+        android:textSize="@dimen/text_size_list_5day"
+        android:textColor="@color/gradient_list_night_end"/>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout_day_5day"
+        android:layout_width="@dimen/width_5day_list"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/land_list5day"
+        android:background="@drawable/gradient_color_list_day_5day">
+
+        <TextView
+            android:id="@+id/temperature_max_5day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/backdown_2dp_list_5day"
+            tools:text="46 C"
+            android:textSize="@dimen/text_size_temperature"
+            android:textColor="@color/text_list_day"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:paddingLeft="@dimen/backdown_2dp_list_5day"
+            android:paddingRight="@dimen/backdown_2dp_list_5day"
+            />
+
+        <TextView
+            android:id="@+id/text_describe_day_list5day"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/text_describe_hight_list_5day"
+            tools:text="Подекуда зливи подекуда зливи і ще щось"
+            android:textColor="@color/gradient_list_night_end"
+            style="@style/TextWithWightShadow"
+            android:paddingLeft="@dimen/backdown_2dp_list_5day"
+            android:paddingRight="@dimen/backdown_2dp_list_5day"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/temperature_max_5day"
+            android:layout_above="@+id/image_list_5day_icon_day"
+            android:textSize="11sp"/>
+
+        <ImageView
+            android:id="@+id/image_list_5day_icon_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:src="@mipmap/ic_weather_29"
+            android:scaleX="1.7"
+            android:scaleY="1.7"
+            android:transformPivotY="30dp"
+            android:transformPivotX="15dp"
+            android:layout_below="@+id/temperature_max_5day"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:text="@string/text_string_opadu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView5"
+            android:textColor="@color/text_list_day"
+            android:textSize="12sp"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"/>
+
+        <TextView
+            android:id="@+id/text_seed_wind_day_list5day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="20km/h"
+            android:textColor="@color/text_list_day"
+            android:textSize="12sp"
+            android:paddingLeft="22dp"
+            android:paddingRight="@dimen/backdown_2dp_list_5day"
+            android:layout_above="@+id/text_describe_day_list5day"
+            android:layout_toEndOf="@+id/image_list_5day_icon_day"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_list_day"
+            android:textSize="12sp"
+            android:id="@+id/text_precipation_day_list5day"
+            tools:text="100%"
+            android:paddingStart="20dp"
+            android:layout_below="@+id/textView5"
+            android:layout_alignStart="@+id/textView5"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_wind"
+            android:id="@+id/imageView3"
+            android:paddingRight="@dimen/backdown_2dp_list_5day"
+            android:paddingLeft="15dp"
+            android:scaleX="1"
+            android:scaleY="1.2"
+            android:translationY="-6dp"
+            android:translationX="-1dp"
+            android:tint="@color/text_list_day"
+            android:layout_above="@+id/text_describe_day_list5day"
+            android:layout_toEndOf="@+id/image_list_5day_icon_day"/>
+
+        <ImageView
+            android:id="@+id/image__umbrella_list_5day_icon_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="0.6"
+            android:scaleY="0.6"
+            android:translationY="-6dp"
+            tools:src="@drawable/ic_umbrellas_24dp"
+            android:layout_below="@+id/textView5"
+            android:layout_alignStart="@+id/textView5"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout_night_5day"
+        android:layout_width="@dimen/width_5day_list"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/land_list5day"
+        android:layout_weight="1"
+        android:background="@drawable/gradient_color_list_night_5day">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_wind"
+            android:id="@+id/imageView4"
+            android:paddingRight="@dimen/backdown_2dp_list_5day"
+            android:paddingLeft="15dp"
+            android:scaleX="1"
+            android:scaleY="1.2"
+            android:translationY="-6dp"
+            android:translationX="-1dp"
+            android:layout_above="@+id/text_describe_night_list5day"
+            android:layout_toEndOf="@+id/image_list_5day_icon_night"
+            android:tint="@color/text_list_night"/>
+
+        <TextView
+            android:id="@+id/text_seed_wind_night_list5day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="20km/h"
+            android:textSize="12sp"
+            android:textColor="@color/text_list_night"
+            android:paddingLeft="22dp"
+            android:paddingRight="@dimen/backdown_2dp_list_5day"
+            android:layout_above="@+id/text_describe_night_list5day"
+            android:layout_toEndOf="@+id/image_list_5day_icon_night"/>
+
+        <TextView
+            android:id="@+id/temperature_min_5day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="3 C"
+            android:textSize="@dimen/text_size_temperature"
+            android:textColor="@color/text_list_night"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:paddingTop="@dimen/backdown_2dp_list_5day"
+            android:paddingLeft="@dimen/backdown_2dp_list_5day"
+            android:paddingRight="@dimen/backdown_2dp_list_5day"
+            />
+
+        <TextView
+            android:id="@+id/text_describe_night_list5day"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/text_describe_hight_list_5day"
+            tools:text="Подекуда зливи "
+            android:textColor="@color/text_list_night"
+            android:textSize="11sp"
+            android:paddingLeft="@dimen/backdown_2dp_list_5day"
+            android:paddingRight="@dimen/backdown_2dp_list_5day"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/temperature_min_5day"
+            android:layout_above="@+id/image_list_5day_icon_night"/>
+
+        <ImageView
+            android:id="@+id/image_list_5day_icon_night"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:src="@mipmap/ic_weather_12"
+            android:scaleX="1.7"
+            android:scaleY="1.7"
+            android:transformPivotY="30dp"
+            android:transformPivotX="15dp"
+            android:contentDescription=""
+            android:layout_below="@+id/temperature_min_5day"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:text="@string/text_string_opadu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView6"
+            android:textColor="@color/text_list_night"
+            android:textSize="12sp"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"/>
+
+        <TextView
+            android:id="@+id/text_precipation_night_list5day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_list_night"
+            android:textSize="12sp"
+            tools:text="100%"
+            android:paddingStart="20dp"
+            android:layout_below="@+id/textView6"
+            android:layout_alignStart="@+id/textView6"/>
+
+        <ImageView
+            android:id="@+id/image__umbrella_list_5day_icon_night"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:src="@drawable/ic_umbrellas_24dp"
+            android:tint="@color/text_list_night"
+            android:scaleX="0.6"
+            android:scaleY="0.6"
+            android:translationY="-6dp"
+            android:layout_below="@+id/textView6"
+            android:layout_alignStart="@+id/textView6"/>
+    </RelativeLayout>
+</LinearLayout>

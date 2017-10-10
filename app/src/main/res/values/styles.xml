@@ -1,0 +1,38 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">true</item>
+        <item name="android:windowContentOverlay">@null</item>-->
+        <item name="searchViewStyle">@style/AppSearchViewStyle</item>
+    </style>
+    <style name="AppSearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:textCursorDrawable">@drawable/ic_back</item>
+        <item name="queryBackground">@android:color/transparent</item>
+        <item name="searchIcon">@drawable/ic_action_name</item>
+        <item name="closeIcon">@drawable/ic_back</item>
+        <item name="queryHint">City name</item>
+        <item name="android:imeActionId">6</item>
+    </style>
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+    </style>
+
+    <style name="MyDialogFragment" parent="@android:style/Theme.Dialog">
+        <item name="android:background">@drawable/corner_dialog_fragment</item>
+    </style>
+    <style name="MyDialogFragment.SearchCity" parent="@android:style/Theme.Dialog">
+        <item name="android:background">@drawable/corner_dialog_fragment_search_city</item>
+        <item name="android:textColor">@color/cardview_light_background</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+    <style name="TextWithWightShadow">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:shadowColor">#040a35</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">2</item>
+    </style>
+</resources>

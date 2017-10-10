@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              xmlns:card_view="http://schemas.android.com/apk/res-auto"
+              android:baselineAligned="false">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="3dp"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardBackgroundColor="@color/cardview_light_background">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/text_time"
+                android:text="12:00"
+                android:textSize="20sp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"/>
+
+            <ImageView
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_wall_thermometer"
+                android:id="@+id/image_termometer_12"
+                android:layout_width="20dp"
+                android:scaleType="center"
+                android:layout_below="@+id/text_time"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:scaleY="1.6"
+                android:scaleX="1.6"/>
+
+            <TextView
+                android:text="13 C"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_temperature"
+                android:layout_below="@+id/text_time"
+                android:layout_toEndOf="@+id/image_termometer_12"
+                android:layout_marginTop="3dp"
+                android:textColor="@android:color/background_dark"
+                android:textSize="17sp"
+                android:textStyle="normal|bold"/>
+
+            <TextView
+                android:text="35 C"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_real_feel_temperature"
+                android:textColor="@android:color/background_dark"
+                android:layout_alignParentBottom="true"
+                android:layout_toEndOf="@+id/image_termometer_12"
+                android:textSize="10sp"
+                />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:id="@+id/relativeLayout">
+            </RelativeLayout>
+
+            <FrameLayout
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/frameLayout">
+               <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_cardinal_points_on_winds_star_symbol"
+                    android:paddingRight="3dp"/>
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_upwards_arrow_4"
+                android:id="@+id/image_diraction_wind_12"
+                android:tint="@color/cardview_shadow_end_color"
+                android:rotation="0"/>
+             </FrameLayout>
+
+
+            <TextView
+                android:text="11.3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="@dimen/text_size_wind_speed"
+                android:id="@+id/text_wind_speed_12"
+                android:textColor="@android:color/background_dark"
+                android:layout_alignTop="@+id/relativeLayout"
+                android:layout_marginRight="55dp"
+                android:layout_alignParentEnd="true"/>
+
+            <TextView
+                android:text="@string/metric_km_h_string_en"
+                android:id="@+id/km_h_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/background_dark"
+                android:layout_alignEnd="@+id/text_wind_speed_12"
+                android:layout_alignParentTop="false"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10dp"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignTop="@+id/relativeLayout"
+                android:layout_toEndOf="@+id/relativeLayout"
+                android:paddingTop="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="22dp">
+
+                <TextView
+                    android:text="%"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/text_precipitation"
+                    android:layout_alignBottom="@+id/text_precipitation"
+                    android:layout_toEndOf="@+id/text_precipitation"
+                    android:textColor="@color/cardview_dark_background"
+                    android:id="@+id/textView2"/>
+
+                <TextView
+                    android:text="100"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text_precipitation"
+                    android:layout_below="@+id/drop_icon"
+                    android:textColor="@color/cardview_dark_background"
+                    android:layout_alignParentStart="true"
+                    android:layout_width="wrap_content"
+                    android:layout_alignWithParentIfMissing="false"
+                    android:layout_centerHorizontal="false"
+                    android:layout_centerInParent="false"
+                    android:layout_centerVertical="false"
+                    android:minWidth="15dp"
+                    android:textAlignment="textEnd"/>
+
+                <ImageView
+                    android:id="@+id/drop_icon"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_drop_0"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/image_weather_icon"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:scaleY="1.5"
+                android:scaleX="1.5"
+                android:src="@mipmap/ic_weather_42"
+                android:layout_alignBottom="@+id/textView"
+                android:layout_toEndOf="@+id/text_time"
+                android:layout_marginStart="36dp"
+                android:adjustViewBounds="false"
+                android:baselineAlignBottom="false"
+                android:cropToPadding="true"/>
+
+            <TextView
+                android:text="@string/real_feel_temperature_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/background_dark"
+                android:textSize="10sp"
+                android:id="@+id/textView"
+                android:layout_marginLeft="2dp"
+                android:layout_alignParentBottom="true"
+                android:layout_toEndOf="@+id/text_real_feel_temperature"/>
+
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

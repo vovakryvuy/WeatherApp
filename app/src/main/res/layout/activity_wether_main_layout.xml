@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/weather_activity_main"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.kryvuy.weatherapp.MainWeatherActivity">
+
+    <include layout="@layout/toolbar">
+        </include>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/my_recycler_view_5days"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_5day_list"
+        android:scrollbars="horizontal"
+        />
+</LinearLayout>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/my_recycler_view_12hour"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_cityandcountry"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_cityandcountry"
+        android:background="@color/colorPrimaryDark"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_city"
+            android:id="@+id/imageView"
+            android:padding="5dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:tint="@color/cardview_light_background"/>
+        <TextView
+            android:text="City0000000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_cocation_city"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:textColor="@color/cardview_light_background"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/imageView"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_country"
+            android:id="@+id/imageView2"
+            android:padding="5dp"
+            android:layout_below="@+id/imageView"
+            android:layout_alignParentStart="true"
+            android:tint="@color/cardview_light_background"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_data_and_month"
+            android:textColor="@color/cardview_light_background"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/text_data_and_day"
+            android:textSize="20sp"
+            android:textAlignment="textEnd"
+            android:textStyle="normal|bold"
+            android:paddingBottom="3dp"
+            android:paddingRight="3dp"
+            tools:text="Вересня"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_data_and_day"
+            android:textSize="30sp"
+            android:textColor="@color/cardview_light_background"
+            android:paddingLeft="20dp"
+            android:textStyle="normal|bold"
+            android:textAlignment="textEnd"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/text_data_and_month"
+            tools:text="30"
+            />
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_toStartOf="@+id/text_data_and_day">
+
+            <ImageView
+                android:id="@+id/panel_icon_wether_now"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:src="@mipmap/ic_weather_12"
+                android:layout_alignParentTop="true"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:paddingTop="@dimen/activity_horizontal_margin"
+                android:layout_alignParentStart="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_panel_termometer"
+                android:paddingTop="5dp"
+                android:textColor="@color/cardview_light_background"
+                tools:text="100 C"
+                android:textSize="@dimen/activity_horizontal_margin"
+                android:textStyle="bold"
+                android:layout_alignTop="@+id/panel_icon_wether_now"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
+
+        <TextView
+            android:text="Country00000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_location_country"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:elevation="0dp"
+            android:textColor="@color/cardview_light_background"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:layout_below="@+id/text_cocation_city"
+            android:layout_toEndOf="@+id/imageView"/>
+    </RelativeLayout>
+</RelativeLayout>

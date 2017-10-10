@@ -1,0 +1,10 @@
+<resources >
+    <string name="app_name">WeatherApp</string>
+    <string name="_text_city">Місто: </string>
+    <string name="_text_country">Країна: </string>
+    <string name="real_feel_temperature_string">по відчутю</string>
+    <string name="metric_km_h_string_en">km/h</string>
+
+    <string name="text_dialog_fragment_no_internet">Виберіть варіант для підключення інтернет звязку</string>
+    <string name="text_string_opadu">опади:</string>
+</resources>
