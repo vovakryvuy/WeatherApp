@@ -21,12 +21,14 @@ import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
 import com.kryvuy.weatherapp.adapter_for_recycle.AdapterRecycle;
+import com.kryvuy.weatherapp.adapter_for_recycle.AdapterRecycle_12Hour;
 import com.kryvuy.weatherapp.adapter_for_recycle.AdapterRecycle_5Days;
 import com.kryvuy.weatherapp.api.Service_Retrofit;
 import com.kryvuy.weatherapp.dialog.DialogSearchCity;
 import com.kryvuy.weatherapp.dialog.Dialog_No_Network;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_1day.Daily_OneDay;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_5days.Daily_FiveDay;
+import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.hourly_12hour_model.Hourly_12HourModel;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.search_city.SearchCityByName;
 import com.kryvuy.weatherapp.start.Constant;
 
@@ -44,32 +46,54 @@ import retrofit2.Response;
 public class MainWeatherActivity extends AppCompatActivity
         implements MenuItemCompat.OnActionExpandListener,SearchView.OnQueryTextListener{
     public static final String EXTRA_KEY_CITY = "com.kryvuy.weatherapp.MainWeatherActivity.EXTRA_KEY_CITY";
-    private RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerViewHours;
+    private RecyclerView mRecyclerViewDays;
+    private String mKeyCity;
     private MenuItem searchMenuItem;
     private SearchView searchView;
     private DialogSearchCity mDialogFragment = new DialogSearchCity();
-
     private List<String> mListCity_CountryName = new ArrayList<>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wether_main_layout);
+        Log.d(MainActivity.LOG_TAG,"-----------START------------");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
+        /*
+        Get Preferenses key City */
         Intent intent = getIntent();
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view_5days);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(
+        mKeyCity = intent.getStringExtra(EXTRA_KEY_CITY);
+
+
+
+        /*
+        RecycleView 5Days Wether*/
+        mRecyclerViewDays = (RecyclerView) findViewById(R.id.my_recycler_view_5days);
+        mRecyclerViewDays.setHasFixedSize(true);
+        mRecyclerViewDays.setLayoutManager(
                 new LinearLayoutManager(MainWeatherActivity.this,LinearLayoutManager.HORIZONTAL,false));
 
 
-        Service_Retrofit.getService().getDaily_5Day(intent.getStringExtra(EXTRA_KEY_CITY),
-                Constant.API_KEY,Constant.LANGUAGE,true,true)
+                /*
+        RecycleView 12Hours Wether*/
+        mRecyclerViewHours = (RecyclerView) findViewById(R.id.my_recycler_view_12hour);
+        mRecyclerViewHours.setHasFixedSize(true);
+        mRecyclerViewHours.setLayoutManager(
+                new LinearLayoutManager(MainWeatherActivity.this,LinearLayoutManager.VERTICAL,false));
+
+
+
+
+        Service_Retrofit.getService().getDaily_5Day(mKeyCity,Constant.API_KEY,Constant.LANGUAGE,true,true)
                 .enqueue(new Callback<Daily_FiveDay>() {
                     @Override
                     public void onResponse(Call<Daily_FiveDay> call, Response<Daily_FiveDay> response) {
-                        mRecyclerView.setAdapter(new AdapterRecycle_5Days(response.body(),getApplicationContext()));
+                        mRecyclerViewDays.setAdapter(new AdapterRecycle_5Days(response.body(),getApplicationContext()));
                     }
 
                     @Override
@@ -78,6 +102,21 @@ public class MainWeatherActivity extends AppCompatActivity
                     }
                 });
 
+
+        Service_Retrofit.getService().getHourly_12Hour(mKeyCity,Constant.API_KEY,Constant.LANGUAGE,true,true)
+                .enqueue(new Callback<List<Hourly_12HourModel>>() {
+                    @Override
+                    public void onResponse(Call<List<Hourly_12HourModel>> call, Response<List<Hourly_12HourModel>> response) {
+                        mRecyclerViewHours.setAdapter(new AdapterRecycle_12Hour(response.body(),getApplicationContext()));
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Hourly_12HourModel>> call, Throwable t) {
+
+                    }
+                });
+
+        Log.d(MainActivity.LOG_TAG,"------------END-------------");
     }
 
     @Override
@@ -153,6 +192,7 @@ public class MainWeatherActivity extends AppCompatActivity
             getString(R.string._text_country) +" "+ searchCityByName.getCountry().getLocalizedName());
         }
     }
+
     private void createListForCityContry(){
         if(!mListCity_CountryName.isEmpty()){
             Log.d(MainActivity.LOG_TAG,"start dialog serch city and country");
