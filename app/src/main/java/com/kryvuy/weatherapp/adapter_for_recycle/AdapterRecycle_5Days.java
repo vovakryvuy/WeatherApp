@@ -21,6 +21,7 @@ import com.kryvuy.weatherapp.start.Constant;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 import retrofit2.Response;
 
 /**
@@ -48,6 +49,8 @@ public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5D
        /*
         TEST
        */
+
+
         if (weatherFiveDay!=null){
             this.mDailyForecasts = weatherFiveDay.getDailyForecasts();
             this.mDayTemperature = getDayTemperature(mDailyForecasts);

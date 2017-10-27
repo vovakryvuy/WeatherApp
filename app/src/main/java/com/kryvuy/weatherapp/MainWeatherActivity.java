@@ -1,40 +1,33 @@
 package com.kryvuy.weatherapp;
-
-import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.support.v7.widget.SearchView;
-import android.widget.Toast;
-
-import com.kryvuy.weatherapp.adapter_for_recycle.AdapterRecycle;
 import com.kryvuy.weatherapp.adapter_for_recycle.AdapterRecycle_12Hour;
 import com.kryvuy.weatherapp.adapter_for_recycle.AdapterRecycle_5Days;
 import com.kryvuy.weatherapp.api.Service_Retrofit;
+import com.kryvuy.weatherapp.control_mesurements.ControlMeasurements;
+import com.kryvuy.weatherapp.data_base.DatabaseWetherFiveDay;
 import com.kryvuy.weatherapp.dialog.DialogSearchCity;
-import com.kryvuy.weatherapp.dialog.Dialog_No_Network;
-import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_1day.Daily_OneDay;
+import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_5days.DailyForecast;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_5days.Daily_FiveDay;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.hourly_12hour_model.Hourly_12HourModel;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.search_city.SearchCityByName;
 import com.kryvuy.weatherapp.start.Constant;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,7 +46,8 @@ public class MainWeatherActivity extends AppCompatActivity
     private SearchView searchView;
     private DialogSearchCity mDialogFragment = new DialogSearchCity();
     private List<String> mListCity_CountryName = new ArrayList<>();
-
+    private Realm mRealm;
+    private DatabaseWetherFiveDay mDatabaseWetherFiveDay;
 
 
     @Override
@@ -68,34 +62,28 @@ public class MainWeatherActivity extends AppCompatActivity
         Get Preferenses key City */
         Intent intent = getIntent();
         mKeyCity = intent.getStringExtra(EXTRA_KEY_CITY);
-
-
-
         /*
         RecycleView 5Days Wether*/
         mRecyclerViewDays = (RecyclerView) findViewById(R.id.my_recycler_view_5days);
         mRecyclerViewDays.setHasFixedSize(true);
         mRecyclerViewDays.setLayoutManager(
                 new LinearLayoutManager(MainWeatherActivity.this,LinearLayoutManager.HORIZONTAL,false));
-
-
-                /*
+        /*
         RecycleView 12Hours Wether*/
         mRecyclerViewHours = (RecyclerView) findViewById(R.id.my_recycler_view_12hour);
         mRecyclerViewHours.setHasFixedSize(true);
         mRecyclerViewHours.setLayoutManager(
                 new LinearLayoutManager(MainWeatherActivity.this,LinearLayoutManager.VERTICAL,false));
 
-
-
-
         Service_Retrofit.getService().getDaily_5Day(mKeyCity,Constant.API_KEY,Constant.LANGUAGE,true,true)
                 .enqueue(new Callback<Daily_FiveDay>() {
                     @Override
                     public void onResponse(Call<Daily_FiveDay> call, Response<Daily_FiveDay> response) {
                         mRecyclerViewDays.setAdapter(new AdapterRecycle_5Days(response.body(),getApplicationContext()));
+                        /*
+                        save in database*/
+                        saveFiveDayInDatabaseRealm(response.body());
                     }
-
                     @Override
                     public void onFailure(Call<Daily_FiveDay> call, Throwable t) {
 
@@ -109,14 +97,18 @@ public class MainWeatherActivity extends AppCompatActivity
                     public void onResponse(Call<List<Hourly_12HourModel>> call, Response<List<Hourly_12HourModel>> response) {
                         mRecyclerViewHours.setAdapter(new AdapterRecycle_12Hour(response.body(),getApplicationContext()));
                     }
-
                     @Override
                     public void onFailure(Call<List<Hourly_12HourModel>> call, Throwable t) {
 
                     }
                 });
-
         Log.d(MainActivity.LOG_TAG,"------------END-------------");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRealm.close();
     }
 
     @Override
@@ -193,11 +185,111 @@ public class MainWeatherActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP){
+            Log.d(MainActivity.LOG_TAG,"PRESSS BUTTON DOWN AND UP");
+            return true;
+        }else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP){
+            Log.d(MainActivity.LOG_TAG,"LONG PRESSS BUTTON DOWN AND UP");
+            return true;
+        }else {
+            return super.onKeyLongPress(keyCode, event);
+        }
+    }
+
     private void createListForCityContry(){
         if(!mListCity_CountryName.isEmpty()){
             Log.d(MainActivity.LOG_TAG,"start dialog serch city and country");
             mDialogFragment.setListCityCountry(mListCity_CountryName);
             mDialogFragment.show(getSupportFragmentManager(),"dialog_fragment_serch_city");
         }
+    }
+
+    public  void saveFiveDayInDatabaseRealm(Daily_FiveDay dailyFiveDay){
+        mRealm = Realm.getDefaultInstance();
+        List<DatabaseWetherFiveDay> databaseWetherFiveDaysList = new ArrayList<>();
+        if (!mRealm.where(DatabaseWetherFiveDay.class).isValid()){
+            //Create Database Model class
+            mRealm.createObject(DatabaseWetherFiveDay.class);
+            Log.d(MainActivity.LOG_TAG,"Create Database Model class");
+        }
+
+        //TEST LOG data 5Day weather
+        int i = 0;
+        for(DailyForecast dailyForecast : dailyFiveDay.getDailyForecasts()){
+            DatabaseWetherFiveDay databaseWetherFiveDay = new DatabaseWetherFiveDay();
+
+            databaseWetherFiveDay.setId(i);
+            Log.d(MainActivity.LOG_TAG,"====== DAY "+ i +" ======");
+            databaseWetherFiveDay.setData(new ControlMeasurements()
+                    .parseDateToString_MonthAndDay(dailyForecast.getDate()));
+            Log.d(MainActivity.LOG_TAG,"Month and Day = "
+                    +new ControlMeasurements().parseDateToString_MonthAndDay(dailyForecast.getDate()));
+
+            databaseWetherFiveDay.setDayTemperature(dailyForecast
+                    .getTemperature().getMaximum().getValue());
+            Log.d(MainActivity.LOG_TAG,"dayTemperature = "
+                    +dailyForecast.getTemperature().getMaximum().getValue());
+
+            databaseWetherFiveDay.setNightTemperature(dailyForecast
+                    .getTemperature().getMinimum().getValue());
+            Log.d(MainActivity.LOG_TAG,"nightTemperature = "
+                    +dailyForecast.getTemperature().getMinimum().getValue());
+
+            databaseWetherFiveDay.setDayDiscribe(dailyForecast.getDay().getShortPhrase());
+            Log.d(MainActivity.LOG_TAG,"dayDiscribe = "
+                    +dailyForecast.getDay().getShortPhrase());
+
+            databaseWetherFiveDay.setNightDiscribe(dailyForecast.getNight().getShortPhrase());
+            Log.d(MainActivity.LOG_TAG,"nightDiscribe = "
+                    +dailyForecast.getNight().getShortPhrase());
+
+            databaseWetherFiveDay.setDayIdIcon(dailyForecast.getDay().getIcon());
+            Log.d(MainActivity.LOG_TAG,"dayIdIcon = "
+                    +dailyForecast.getDay().getIcon());
+
+            databaseWetherFiveDay.setNightIdIcon(dailyForecast.getNight().getIcon());
+            Log.d(MainActivity.LOG_TAG,"nightIdIcon = "
+                    +dailyForecast.getNight().getIcon());
+
+            databaseWetherFiveDay.setDayPrecipation(dailyForecast
+                    .getDay().getPrecipitationProbability());
+            Log.d(MainActivity.LOG_TAG,"dayPrecipation = "
+                    +dailyForecast.getDay().getPrecipitationProbability());
+
+            databaseWetherFiveDay.setDayPrecipation(dailyForecast
+                    .getNight().getPrecipitationProbability());
+            Log.d(MainActivity.LOG_TAG,"nightPrecipation = "
+                    +dailyForecast.getNight().getPrecipitationProbability());
+
+            databaseWetherFiveDay.setDaySpeedWind(dailyForecast
+                    .getDay().getWind().getSpeed().getValue().intValue());
+            Log.d(MainActivity.LOG_TAG,"daySpeedWind = "
+                    +dailyForecast.getDay().getWind()
+                    .getSpeed().getValue().intValue());
+
+            databaseWetherFiveDay.setDaySpeedWind(dailyForecast
+                    .getNight().getWind().getSpeed().getValue().intValue());
+            Log.d(MainActivity.LOG_TAG,"nightSpeedWind = "
+                    +dailyForecast.getNight().getWind()
+                    .getSpeed().getValue().intValue());
+
+            //add object 1-5 day weather
+            databaseWetherFiveDaysList.add(databaseWetherFiveDay);
+            i++;
+        }
+        mRealm.beginTransaction();
+        mRealm.copyToRealmOrUpdate(databaseWetherFiveDaysList);
+        Log.d(MainActivity.LOG_TAG,"SAve or update Weather 5 Day");
+        mRealm.cancelTransaction();
+
+        //TEST LOG data 5Day weather
     }
 }

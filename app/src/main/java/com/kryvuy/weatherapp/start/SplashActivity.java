@@ -13,6 +13,8 @@ import com.kryvuy.weatherapp.R;
 import com.kryvuy.weatherapp.api.Service_Retrofit;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_1day.Daily_OneDay;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,6 +29,10 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
+        /*
+        initilization Realm*/
+        Realm.init(this);
+        Realm.setDefaultConfiguration(new RealmConfiguration.Builder().name("weatherapp.realm").build());
 
         new Handler().postDelayed(new Runnable() {
             @Override

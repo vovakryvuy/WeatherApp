@@ -1,8 +1,13 @@
 apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
+
+        configurations.all {
+            resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+        }
     defaultConfig {
         applicationId "com.kryvuy.weatherapp"
         minSdkVersion 21
