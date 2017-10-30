@@ -214,7 +214,7 @@ public class MainWeatherActivity extends AppCompatActivity
 
     public  void saveFiveDayInDatabaseRealm(Daily_FiveDay dailyFiveDay){
         mRealm = Realm.getDefaultInstance();
-        List<DatabaseWetherFiveDay> databaseWetherFiveDaysList = new ArrayList<>();
+        final List<DatabaseWetherFiveDay> databaseWetherFiveDaysList = new ArrayList<>();
         if (!mRealm.where(DatabaseWetherFiveDay.class).isValid()){
             //Create Database Model class
             mRealm.createObject(DatabaseWetherFiveDay.class);
@@ -264,7 +264,7 @@ public class MainWeatherActivity extends AppCompatActivity
             Log.d(MainActivity.LOG_TAG,"dayPrecipation = "
                     +dailyForecast.getDay().getPrecipitationProbability());
 
-            databaseWetherFiveDay.setDayPrecipation(dailyForecast
+            databaseWetherFiveDay.setNightPrecipation(dailyForecast
                     .getNight().getPrecipitationProbability());
             Log.d(MainActivity.LOG_TAG,"nightPrecipation = "
                     +dailyForecast.getNight().getPrecipitationProbability());
@@ -275,7 +275,7 @@ public class MainWeatherActivity extends AppCompatActivity
                     +dailyForecast.getDay().getWind()
                     .getSpeed().getValue().intValue());
 
-            databaseWetherFiveDay.setDaySpeedWind(dailyForecast
+            databaseWetherFiveDay.setNightSpeedWind(dailyForecast
                     .getNight().getWind().getSpeed().getValue().intValue());
             Log.d(MainActivity.LOG_TAG,"nightSpeedWind = "
                     +dailyForecast.getNight().getWind()
@@ -285,11 +285,13 @@ public class MainWeatherActivity extends AppCompatActivity
             databaseWetherFiveDaysList.add(databaseWetherFiveDay);
             i++;
         }
-        mRealm.beginTransaction();
-        mRealm.copyToRealmOrUpdate(databaseWetherFiveDaysList);
-        Log.d(MainActivity.LOG_TAG,"SAve or update Weather 5 Day");
-        mRealm.cancelTransaction();
 
-        //TEST LOG data 5Day weather
+        /*
+        Save or Update into database */
+        mRealm.beginTransaction();
+        mRealm.insertOrUpdate(databaseWetherFiveDaysList);
+        Log.d(MainActivity.LOG_TAG,"SAve or update Weather 5 Day");
+        Log.d(MainActivity.LOG_TAG,"Realm path = "+mRealm.getPath());
+        mRealm.commitTransaction();
     }
 }

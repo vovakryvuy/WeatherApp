@@ -27,7 +27,6 @@ import retrofit2.Response;
 /**
  * Created by Володимир on 4/29/2017.
  */
-
 public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5Days.ViewHolder> {
     private List<String> mDayTemperature = new ArrayList<>();
     private List<String> mNightTemperature = new ArrayList<>();
@@ -49,8 +48,6 @@ public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5D
        /*
         TEST
        */
-
-
         if (weatherFiveDay!=null){
             this.mDailyForecasts = weatherFiveDay.getDailyForecasts();
             this.mDayTemperature = getDayTemperature(mDailyForecasts);
@@ -79,8 +76,7 @@ public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5D
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_5_day,parent,false);
-        ViewHolder viewHolder = new ViewHolder(v);
-        return viewHolder;
+        return new ViewHolder(v);
     }
 
     @Override
@@ -117,11 +113,11 @@ public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5D
         });
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder{
         TextView mTextTempMax,mTextTempMin,mTextDate,mTextDescribeDay,mTextDescribeNight,
                 mTextSpeedWindDay,mTextSpeedWindNight,mTextPrecipationDay,mTextPrecipationNight;
         ImageView mImageIconDay,mImageIconNight,mImageUmbrellaDay,mImageUmbrellaNight;
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             mTextTempMax = (TextView) v.findViewById(R.id.temperature_max_5day);
             mTextTempMin = (TextView) v.findViewById(R.id.temperature_min_5day);
