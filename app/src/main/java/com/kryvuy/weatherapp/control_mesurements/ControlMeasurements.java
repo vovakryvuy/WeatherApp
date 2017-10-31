@@ -23,7 +23,6 @@ import java.util.Locale;
  */
 
 public class ControlMeasurements {
-
     public int getDrawableWeatherIcon(Integer n){
         int id;
         switch (n){
@@ -205,6 +204,14 @@ public class ControlMeasurements {
             }
         }
         return time;
+    }
+
+    public String parseTimeHourMinutesToString(String time) throws ParseException {
+        Date date;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+        SimpleDateFormat  simpleDateFormat = new SimpleDateFormat("HH:mm");
+            date  = dateFormat.parse(time);
+        return simpleDateFormat.format(date);
     }
 
     public List<Double> parseTemperature_Double(List<Hourly_12HourModel> list){

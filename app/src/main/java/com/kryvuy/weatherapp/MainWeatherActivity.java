@@ -16,6 +16,7 @@ import com.kryvuy.weatherapp.adapter_for_recycle.AdapterRecycle_5Days;
 import com.kryvuy.weatherapp.api.Service_Retrofit;
 import com.kryvuy.weatherapp.control_mesurements.ControlMeasurements;
 import com.kryvuy.weatherapp.data_base.DatabaseWetherFiveDay;
+import com.kryvuy.weatherapp.data_base.DatabaseWetherTwelveHour;
 import com.kryvuy.weatherapp.dialog.DialogSearchCity;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_5days.DailyForecast;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_5days.Daily_FiveDay;
@@ -23,11 +24,15 @@ import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_res
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.search_city.SearchCityByName;
 import com.kryvuy.weatherapp.start.Constant;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.exceptions.RealmMigrationNeededException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,6 +61,13 @@ public class MainWeatherActivity extends AppCompatActivity
         setContentView(R.layout.activity_wether_main_layout);
         Log.d(MainActivity.LOG_TAG,"-----------START------------");
 
+        /*
+        inizializi RealmDataBase*/
+
+            mRealm = Realm.getDefaultInstance();
+
+        downloadDateAboiutFiveDayRealm();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
         /*
@@ -81,7 +93,7 @@ public class MainWeatherActivity extends AppCompatActivity
                     public void onResponse(Call<Daily_FiveDay> call, Response<Daily_FiveDay> response) {
                         mRecyclerViewDays.setAdapter(new AdapterRecycle_5Days(response.body(),getApplicationContext()));
                         /*
-                        save in database*/
+                        save five days in database*/
                         saveFiveDayInDatabaseRealm(response.body());
                     }
                     @Override
@@ -90,13 +102,21 @@ public class MainWeatherActivity extends AppCompatActivity
                     }
                 });
 
-
         Service_Retrofit.getService().getHourly_12Hour(mKeyCity,Constant.API_KEY,Constant.LANGUAGE,true,true)
                 .enqueue(new Callback<List<Hourly_12HourModel>>() {
                     @Override
                     public void onResponse(Call<List<Hourly_12HourModel>> call, Response<List<Hourly_12HourModel>> response) {
                         mRecyclerViewHours.setAdapter(new AdapterRecycle_12Hour(response.body(),getApplicationContext()));
+                         /*
+                        save twelve hours in database*/
+                        try {
+                            saveTwelveHoursInDatabaseRealm(response.body());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
                     }
+
                     @Override
                     public void onFailure(Call<List<Hourly_12HourModel>> call, Throwable t) {
 
@@ -213,8 +233,8 @@ public class MainWeatherActivity extends AppCompatActivity
     }
 
     public  void saveFiveDayInDatabaseRealm(Daily_FiveDay dailyFiveDay){
-        mRealm = Realm.getDefaultInstance();
-        final List<DatabaseWetherFiveDay> databaseWetherFiveDaysList = new ArrayList<>();
+
+        List<DatabaseWetherFiveDay> databaseWetherFiveDaysList = new ArrayList<>();
         if (!mRealm.where(DatabaseWetherFiveDay.class).isValid()){
             //Create Database Model class
             mRealm.createObject(DatabaseWetherFiveDay.class);
@@ -293,5 +313,76 @@ public class MainWeatherActivity extends AppCompatActivity
         Log.d(MainActivity.LOG_TAG,"SAve or update Weather 5 Day");
         Log.d(MainActivity.LOG_TAG,"Realm path = "+mRealm.getPath());
         mRealm.commitTransaction();
+    }
+
+    public void saveTwelveHoursInDatabaseRealm(List<Hourly_12HourModel> hourly_12HourModel) throws ParseException {
+        int i = 0;
+        List<DatabaseWetherTwelveHour> databaseWetherTwelveHourList  = new ArrayList<>();
+        if (!mRealm.where(DatabaseWetherTwelveHour.class).isValid()){
+            //Create data Model class for Realm
+            mRealm.createObject(DatabaseWetherTwelveHour.class);
+            Log.d(MainActivity.LOG_TAG, "Create Table for date about " +
+                    "TwelveHoursInDatabaseRealm: ");
+        }
+        for (Hourly_12HourModel hourlyForecast : hourly_12HourModel) {
+            DatabaseWetherTwelveHour databaseWetherTwelveHour =
+                    new DatabaseWetherTwelveHour();
+            Log.d(MainActivity.LOG_TAG, " --- Hour "+i+"-----");
+            databaseWetherTwelveHour.setId(i);
+
+            Log.d(MainActivity.LOG_TAG, "Time ="+hourlyForecast.getDateTime());
+            databaseWetherTwelveHour.setTime(
+                    new ControlMeasurements()
+                            .parseTimeHourMinutesToString(hourlyForecast.getDateTime()));
+
+            Log.d(MainActivity.LOG_TAG, "Temperature ="+hourlyForecast
+                    .getTemperature().getValue());
+            databaseWetherTwelveHour.setTemperature(hourlyForecast
+                    .getTemperature().getValue());
+
+            Log.d(MainActivity.LOG_TAG, "RealFeel temperature ="+hourlyForecast
+                    .getRealFeelTemperature().getValue());
+            databaseWetherTwelveHour.setRealFeelTemperature(hourlyForecast
+                    .getRealFeelTemperature().getValue());
+
+            Log.d(MainActivity.LOG_TAG, "Icon ID ="+hourlyForecast.getWeatherIcon());
+            databaseWetherTwelveHour.setIdIcon(hourlyForecast.getWeatherIcon());
+
+            Log.d(MainActivity.LOG_TAG, "Precipitation ="+hourlyForecast
+                    .getPrecipitationProbability());
+            databaseWetherTwelveHour.setPrecipitation(hourlyForecast
+            .getPrecipitationProbability());
+
+            Log.d(MainActivity.LOG_TAG, "Wind Speed ="+hourlyForecast
+                    .getWind().getSpeed().getValue());
+            databaseWetherTwelveHour.setSpeedWind(hourlyForecast
+                    .getWind().getSpeed().getValue());
+
+            Log.d(MainActivity.LOG_TAG, "Wind Direction ="+hourlyForecast
+                    .getWind().getDirection().getDegrees());
+            databaseWetherTwelveHour.setDirectionWind(hourlyForecast
+            .getWind().getDirection().getDegrees());
+
+            databaseWetherTwelveHourList.add(databaseWetherTwelveHour);
+            i++;
+        }
+        /*
+        Save or Update into database */
+        mRealm.beginTransaction();
+        mRealm.insertOrUpdate(databaseWetherTwelveHourList);
+        Log.d(MainActivity.LOG_TAG,"SAve or update Weather 12 Hours");
+        Log.d(MainActivity.LOG_TAG,"Realm path = "+mRealm.getPath());
+        mRealm.commitTransaction();
+    }
+
+    public void downloadDateAboiutFiveDayRealm(){
+        List<DatabaseWetherFiveDay> databaseWetherFiveDayList;
+               databaseWetherFiveDayList = mRealm.where(DatabaseWetherFiveDay.class).findAll();
+        for (DatabaseWetherFiveDay databaseWetherFiveDay:  databaseWetherFiveDayList) {
+            Log.d(MainActivity.LOG_TAG, "downloadDateAboiutFiveDayRealm: ");
+            Log.d(MainActivity.LOG_TAG, ""+databaseWetherFiveDay.getData()+"\n"
+                    +""+databaseWetherFiveDay.getDayDiscribe()+"\n");
+
+        }
     }
 }
