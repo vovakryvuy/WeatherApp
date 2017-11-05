@@ -13,33 +13,63 @@ import android.widget.TextView;
 
 import com.kryvuy.weatherapp.control_mesurements.ControlMeasurements;
 import com.kryvuy.weatherapp.R;
+import com.kryvuy.weatherapp.data_base.DatabaseWetherTwelveHour;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.hourly_12hour_model.Hourly_12HourModel;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
 
 /**
  * Created by Володимир on 5/7/2017.
  */
 public class AdapterRecycle_12Hour extends RecyclerView.Adapter<AdapterRecycle_12Hour.ViewHolder> {
     private Context mContext;
-    private List<String> list_time;
+    private List<String> list_time = new ArrayList<>();
     private List<Double> mTemperature_Double = new ArrayList<>();
     private List<String> mRealFeelTemperature = new ArrayList<>();
-    private List<Double> mWindSpeed;
-    private List<Integer> mDirectionWind;
-    private List<Integer> mNumberIcon;
-    private List<Integer> mPrecipitation;
+    private List<Double> mWindSpeed = new ArrayList<>();
+    private List<Integer> mDirectionWind = new ArrayList<>();
+    private List<Integer> mNumberIcon = new ArrayList<>();
+    private List<Integer> mPrecipitation = new ArrayList<>();
+    private Realm mRealm;
     private ControlMeasurements mControlMeasurements = new ControlMeasurements();
 
     public AdapterRecycle_12Hour(List<Hourly_12HourModel> list, Context context) {
         this.mContext = context;
-        this.list_time = mControlMeasurements.parseTime(list);
-        this.mTemperature_Double = mControlMeasurements.parseTemperature_Double(list);
-        this.mRealFeelTemperature  = mControlMeasurements.parseTemperatureRealFeel(list);
-        this.mNumberIcon = mControlMeasurements.parseNumberIconWeather(list);
-        this.mWindSpeed = mControlMeasurements.parseWindSpeed(list);
-        this.mDirectionWind = mControlMeasurements.parseDirectionWind(list);
-        this.mPrecipitation = mControlMeasurements.parsePrecipitation(list);
+        if (list!=null){
+            this.list_time = mControlMeasurements.parseTime(list);
+            this.mTemperature_Double = mControlMeasurements.parseTemperature_Double(list);
+            this.mRealFeelTemperature  = mControlMeasurements.parseTemperatureRealFeel(list);
+            this.mNumberIcon = mControlMeasurements.parseNumberIconWeather(list);
+            this.mWindSpeed = mControlMeasurements.parseWindSpeed(list);
+            this.mDirectionWind = mControlMeasurements.parseDirectionWind(list);
+            this.mPrecipitation = mControlMeasurements.parsePrecipitation(list);
+        }else {
+            mRealm = Realm.getDefaultInstance();
+            if (mRealm.where(DatabaseWetherTwelveHour.class).isValid()){
+                List<DatabaseWetherTwelveHour> wetherTwelveHours =
+                        mRealm.where(DatabaseWetherTwelveHour.class).findAll();
+                for (DatabaseWetherTwelveHour twelveHour : wetherTwelveHours) {
+                    this.list_time.add(twelveHour.getTime());
+                    this.mTemperature_Double.add(twelveHour.getTemperature());
+                    this.mRealFeelTemperature.add(String.valueOf(twelveHour.getRealFeelTemperature()));
+                    this.mNumberIcon.add(twelveHour.getIdIcon());
+                    this.mWindSpeed.add(twelveHour.getSpeedWind());
+                    this.mDirectionWind.add(twelveHour.getDirectionWind());
+                    this.mPrecipitation.add(twelveHour.getPrecipitation());
+                }
+            }else {
+                this.list_time.add("---");
+                this.mTemperature_Double.add(0.0);
+                this.mRealFeelTemperature.add("---");
+                this.mNumberIcon.add(0);
+                this.mWindSpeed.add(0.0);
+                this.mDirectionWind.add(0);
+                this.mPrecipitation.add(0);
+            }
+        }
+
     }
 
     @Override
@@ -72,10 +102,10 @@ public class AdapterRecycle_12Hour extends RecyclerView.Adapter<AdapterRecycle_1
         holder.clearAnimation();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder{
         TextView mTextTime,mTextTemperature,mTextRealFeelTemperature,mTextWindSpeed,mTextPrecipitation;
         ImageView mImageTermometer,mImageDiractionWind,mWeatherIcon,mImageDrop;
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             mTextTime = (TextView) v.findViewById(R.id.text_time);
             mTextTemperature = (TextView)v.findViewById(R.id.text_temperature);
@@ -88,7 +118,7 @@ public class AdapterRecycle_12Hour extends RecyclerView.Adapter<AdapterRecycle_1
             mImageDiractionWind = (ImageView)v.findViewById(R.id.image_diraction_wind_12);
         }
 
-        public void clearAnimation() {
+        void clearAnimation() {
            // mImageMillWindRotation.clearAnimation();
         }
     }

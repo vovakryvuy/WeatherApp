@@ -14,6 +14,7 @@ import com.kryvuy.weatherapp.Activity_OneDayWeather;
 import com.kryvuy.weatherapp.MainActivity;
 import com.kryvuy.weatherapp.R;
 import com.kryvuy.weatherapp.control_mesurements.ControlMeasurements;
+import com.kryvuy.weatherapp.data_base.DatabaseWetherFiveDay;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_5days.DailyForecast;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_5days.Daily_FiveDay;
 import com.kryvuy.weatherapp.start.Constant;
@@ -30,24 +31,23 @@ import retrofit2.Response;
 public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5Days.ViewHolder> {
     private List<String> mDayTemperature = new ArrayList<>();
     private List<String> mNightTemperature = new ArrayList<>();
-    private List<String> mDayAndMonth;
-    private List<Integer> mIdIconDay;
-    private List<Integer> mIdIconNight;
-    private List<String> mDescribeDay;
-    private List<String> mDescribeNight;
-    private List<String> mSpeedWindDay;
-    private List<String> mSpeedWindNight;
-    private List<Integer> mPrecipationDay;
-    private List<Integer> mPrecipationNight;
+    private List<String> mDayAndMonth = new ArrayList<>();
+    private List<Integer> mIdIconDay = new ArrayList<>();
+    private List<Integer> mIdIconNight = new ArrayList<>();
+    private List<String> mDescribeDay = new ArrayList<>();
+    private List<String> mDescribeNight = new ArrayList<>();
+    private List<String> mSpeedWindDay = new ArrayList<>();
+    private List<String> mSpeedWindNight = new ArrayList<>();
+    private List<Integer> mPrecipationDay = new ArrayList<>();
+    private List<Integer> mPrecipationNight = new ArrayList<>();
     private List<DailyForecast> mDailyForecasts;
     private Context mContext;
+    private Realm mRealm;
     private ControlMeasurements mMeasurements = new ControlMeasurements();
-
     public AdapterRecycle_5Days(Daily_FiveDay weatherFiveDay, Context context){
         this.mContext = context;
        /*
-        TEST
-       */
+        TEST*/
         if (weatherFiveDay!=null){
             this.mDailyForecasts = weatherFiveDay.getDailyForecasts();
             this.mDayTemperature = getDayTemperature(mDailyForecasts);
@@ -61,14 +61,39 @@ public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5D
             this.mSpeedWindNight = getSpeedWindNight(mDailyForecasts);
             this.mPrecipationDay = getPrecipationDay(mDailyForecasts);
             this.mPrecipationNight = getPrecipationNight(mDailyForecasts);
-
         }else{
-            mDayTemperature.add("немає");
-            mNightTemperature.add("немає");
-            mDayTemperature.add("немає");
-            mNightTemperature.add("немає");
-            mDayTemperature.add("немає");
-            mNightTemperature.add("немає");
+            mRealm = Realm.getDefaultInstance();
+            if (mRealm.where(DatabaseWetherFiveDay.class).isValid()){
+                List<DatabaseWetherFiveDay> wetherFiveDays =
+                        mRealm.where(DatabaseWetherFiveDay.class).findAll();
+                Log.d(MainActivity.LOG_TAG, "AdapterRecycle_5Days: GET realm data");
+                for (DatabaseWetherFiveDay fiveDay : wetherFiveDays) {
+                    this.mDayTemperature.add(fiveDay.getDayTemperature().toString());
+                    this.mNightTemperature.add(fiveDay.getNightTemperature().toString());
+                    this.mDayAndMonth.add(fiveDay.getData());
+                    this.mIdIconDay.add(fiveDay.getDayIdIcon());
+                    this.mIdIconNight.add(fiveDay.getNightIdIcon());
+                    this.mDescribeDay.add(fiveDay.getDayDiscribe());
+                    this.mDescribeNight.add(fiveDay.getNightDiscribe());
+                    this.mSpeedWindDay.add(String.valueOf(fiveDay.getDaySpeedWind()));
+                    this.mSpeedWindNight.add(String.valueOf(fiveDay.getNightSpeedWind()));
+                    this.mPrecipationDay.add(fiveDay.getDayPrecipation());
+                    this.mPrecipationNight.add(fiveDay.getNightPrecipation());
+                }
+            }else {
+                this.mDayTemperature.add("---");
+                this.mNightTemperature.add("---");
+                this.mDayAndMonth.add("---");
+                this.mIdIconDay.add(0);
+                this.mIdIconNight.add(0);
+                this.mDescribeDay.add("---");
+                this.mDescribeNight.add("---");
+                this.mSpeedWindDay.add("---");
+                this.mSpeedWindNight.add("---");
+                this.mPrecipationDay.add(0);
+                this.mPrecipationNight.add(0);
+
+            }
         }
 
     }

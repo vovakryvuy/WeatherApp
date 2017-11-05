@@ -1,6 +1,7 @@
 package com.kryvuy.weatherapp;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import io.realm.Realm;
@@ -52,6 +54,7 @@ public class MainWeatherActivity extends AppCompatActivity
     private DialogSearchCity mDialogFragment = new DialogSearchCity();
     private List<String> mListCity_CountryName = new ArrayList<>();
     private Realm mRealm;
+    private TextToSpeech mTextToSpeech;
     private DatabaseWetherFiveDay mDatabaseWetherFiveDay;
 
 
@@ -63,10 +66,18 @@ public class MainWeatherActivity extends AppCompatActivity
 
         /*
         inizializi RealmDataBase*/
-
             mRealm = Realm.getDefaultInstance();
 
-        downloadDateAboiutFiveDayRealm();
+        /*
+        inizializi TextToSpeech*/
+        mTextToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR ){
+                    mTextToSpeech.setLanguage(Locale.getDefault());
+                }
+            }
+        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
@@ -98,7 +109,7 @@ public class MainWeatherActivity extends AppCompatActivity
                     }
                     @Override
                     public void onFailure(Call<Daily_FiveDay> call, Throwable t) {
-
+                        mRecyclerViewDays.setAdapter(new AdapterRecycle_5Days(null,getApplicationContext()));
                     }
                 });
 
@@ -119,7 +130,7 @@ public class MainWeatherActivity extends AppCompatActivity
 
                     @Override
                     public void onFailure(Call<List<Hourly_12HourModel>> call, Throwable t) {
-
+                        mRecyclerViewHours.setAdapter(new AdapterRecycle_12Hour(null,getApplicationContext()));
                     }
                 });
         Log.d(MainActivity.LOG_TAG,"------------END-------------");
@@ -209,6 +220,8 @@ public class MainWeatherActivity extends AppCompatActivity
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP){
             Log.d(MainActivity.LOG_TAG,"PRESSS BUTTON DOWN AND UP");
+            mTextToSpeech.stop();
+            mTextToSpeech.speak("The wether is good 12 °C",TextToSpeech.QUEUE_FLUSH,null,null);
             return true;
         }else {
             return super.onKeyDown(keyCode, event);
@@ -329,6 +342,7 @@ public class MainWeatherActivity extends AppCompatActivity
                     new DatabaseWetherTwelveHour();
             Log.d(MainActivity.LOG_TAG, " --- Hour "+i+"-----");
             databaseWetherTwelveHour.setId(i);
+
 
             Log.d(MainActivity.LOG_TAG, "Time ="+hourlyForecast.getDateTime());
             databaseWetherTwelveHour.setTime(
