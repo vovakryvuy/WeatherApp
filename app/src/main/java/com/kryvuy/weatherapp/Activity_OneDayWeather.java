@@ -67,9 +67,8 @@ public class Activity_OneDayWeather extends AppCompatActivity {
                 //Метод для збереження ключа міста
                 saveCityKeySharedPreferences(intent.getStringExtra(Activity_OneDayWeather.EXTRA_KEY_LOCATION_CITY));
                 Log.d(MainActivity.LOG_TAG,"Save city key = "
-                        +intent.getStringExtra(Activity_OneDayWeather.EXTRA_KEY_LOCATION_CITY)
-                        +" in SharePreferences");
-
+                        + intent.getStringExtra(Activity_OneDayWeather.EXTRA_KEY_LOCATION_CITY)
+                        + " in SharePreferences");
             }
         }).start();
 

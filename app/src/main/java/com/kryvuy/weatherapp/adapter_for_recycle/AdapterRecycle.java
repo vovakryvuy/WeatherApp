@@ -12,8 +12,10 @@ import android.widget.TextView;
 
 import com.kryvuy.weatherapp.Activity_OneDayWeather;
 import com.kryvuy.weatherapp.MainActivity;
+import com.kryvuy.weatherapp.MainWeatherActivity;
 import com.kryvuy.weatherapp.R;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.search_city.SearchCityByName;
+import com.kryvuy.weatherapp.start.Constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +56,7 @@ public class AdapterRecycle extends RecyclerView.Adapter<AdapterRecycle.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_view_city_search,parent,false);
-        ViewHolder viewHolder = new ViewHolder(v);
-        return viewHolder;
+        return new ViewHolder(v);
     }
 
     @Override
@@ -70,21 +71,27 @@ public class AdapterRecycle extends RecyclerView.Adapter<AdapterRecycle.ViewHold
                 Log.d(MainActivity.LOG_TAG,
                         "Натиснуто = "+posit+"місто = "+mListCityNames.get(posit));
                 if(mKeyCity!=null){
-                    Intent intent = new Intent(mContext,Activity_OneDayWeather.class);
+                    /*Intent intent = new Intent(mContext,Activity_OneDayWeather.class);
                     intent.putExtra(Activity_OneDayWeather.EXTRA_KEY_LOCATION_CITY,mKeyCity.get(posit));
                     intent.putExtra(Activity_OneDayWeather.EXTRA_NAME_CITY,mListCityNames.get(posit));
                     intent.putExtra(Activity_OneDayWeather.EXTRA_NAME_COUNTRY,mListCountry.get(posit));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(intent);
+                    mContext.startActivity(intent);*/
 
+                    Intent intent = new Intent(mContext,MainWeatherActivity.class);
+                    intent.putExtra(Constant.EXTRA_KEY_LOCATION_CITY,mKeyCity.get(posit));
+                    //intent.putExtra(Activity_OneDayWeather.EXTRA_NAME_CITY,mListCityNames.get(posit));
+                    //intent.putExtra(Activity_OneDayWeather.EXTRA_NAME_COUNTRY,mListCountry.get(posit));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
                 }
             }
         });
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder{
         TextView mTextView_City,mTextView_Country;
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             mTextView_City = (TextView) v.findViewById(R.id.city_name);
             mTextView_Country = (TextView) v.findViewById(R.id.country);

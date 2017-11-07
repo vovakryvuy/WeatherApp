@@ -1,6 +1,7 @@
 package com.kryvuy.weatherapp;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.view.MenuItemCompat;
@@ -88,7 +89,16 @@ public class MainWeatherActivity extends AppCompatActivity
         /*
         Get Preferenses key City */
         Intent intent = getIntent();
-        mKeyCity = intent.getStringExtra(EXTRA_KEY_CITY);
+        mKeyCity = intent.getStringExtra(Constant.EXTRA_KEY_LOCATION_CITY);
+        //mKeyCity = intent.getStringExtra(EXTRA_KEY_CITY);
+
+        /*
+        save city_key in SharePreferences*/
+        saveCityKeySharedPreferences(intent);
+        Log.d(MainActivity.LOG_TAG,"Save city key = "
+                + intent.getStringExtra(Activity_OneDayWeather.EXTRA_KEY_LOCATION_CITY)
+                + " in SharePreferences");
+
         /*
         RecycleView 5Days Wether*/
         mRecyclerViewDays = (RecyclerView) findViewById(R.id.my_recycler_view_5days);
@@ -468,7 +478,22 @@ public class MainWeatherActivity extends AppCompatActivity
         return speech;
     }
 
-
+    private void saveCityKeySharedPreferences(Intent intent){
+        /*SharedPreferences sharedPreferences = getSharedPreferences(Constant.SAVE_CITY_KEY,Context.MODE_PRIVATE);
+        if (intent != null){
+            String city_key = intent.getStringExtra(Constant.EXTRA_KEY_LOCATION_CITY);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(Constant.SAVE_CITY_KEY, mKeyCity);
+            editor.apply();
+        }*/
+        SharedPreferences sharedPreferences = getSharedPreferences(Constant.SAVE_CITY_KEY,Context.MODE_PRIVATE);
+        if (!sharedPreferences.contains(Constant.SAVE_CITY_KEY)){
+            String city_key = intent.getStringExtra(Constant.EXTRA_KEY_LOCATION_CITY);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(Constant.SAVE_CITY_KEY, mKeyCity);
+            editor.apply();
+        }
+    }
 }
 
 

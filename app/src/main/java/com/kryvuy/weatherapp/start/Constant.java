@@ -11,4 +11,5 @@ public class Constant {
     public static final String BASE_URL = "http://dataservice.accuweather.com/";
     public static final String LANGUAGE = "en-us";
     public static final String SAVE_CITY_KEY = "save_city_key";
+    public static final String EXTRA_KEY_LOCATION_CITY = "com.kryvuy.weatherapp.start.Constant";
 }

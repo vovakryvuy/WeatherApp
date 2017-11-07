@@ -6,7 +6,7 @@
     <string name="metric_km_h_string">km/h</string>
     <string name="string_percent">%</string>
     <string name="text_dialog_fragment_no_internet">Choose conect to internet</string>
-    <string name="text_string_opadu">precipitation:</string>
+    <string name="text_string_opadu">precipation:</string>
     <string name="string_celsius">°C</string>
     <string name="string_tts_no_data">no data</string>
     <string name="string_tts_hour">hour</string>

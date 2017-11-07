@@ -53,7 +53,8 @@
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@+id/temperature_max_5day"
             android:layout_above="@+id/image_list_5day_icon_day"
-            android:textSize="11sp"/>
+            android:textSize="11sp"
+            tools:ignore="SmallSp" />
 
         <ImageView
             android:id="@+id/image_list_5day_icon_day"
@@ -65,7 +66,8 @@
             android:transformPivotY="30dp"
             android:transformPivotX="15dp"
             android:layout_below="@+id/temperature_max_5day"
-            android:layout_alignParentStart="true"/>
+            android:layout_alignParentStart="true"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:text="@string/text_string_opadu"
@@ -74,7 +76,7 @@
             android:id="@+id/textView5"
             android:textColor="@color/text_list_day"
             android:textSize="12sp"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="5dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"/>
 
@@ -99,7 +101,8 @@
             tools:text="100%"
             android:paddingStart="20dp"
             android:layout_below="@+id/textView5"
-            android:layout_alignStart="@+id/textView5"/>
+            android:layout_alignStart="@+id/textView5"
+            tools:ignore="RtlSymmetry" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -114,7 +117,8 @@
             android:translationX="-1dp"
             android:tint="@color/text_list_day"
             android:layout_above="@+id/text_describe_day_list5day"
-            android:layout_toEndOf="@+id/image_list_5day_icon_day"/>
+            android:layout_toEndOf="@+id/image_list_5day_icon_day"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/image__umbrella_list_5day_icon_day"
@@ -125,7 +129,8 @@
             android:translationY="-6dp"
             tools:src="@drawable/ic_umbrellas_24dp"
             android:layout_below="@+id/textView5"
-            android:layout_alignStart="@+id/textView5"/>
+            android:layout_alignStart="@+id/textView5"
+            tools:ignore="ContentDescription" />
 
     </RelativeLayout>
 
@@ -150,7 +155,8 @@
             android:translationX="-1dp"
             android:layout_above="@+id/text_describe_night_list5day"
             android:layout_toEndOf="@+id/image_list_5day_icon_night"
-            android:tint="@color/text_list_night"/>
+            android:tint="@color/text_list_night"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/text_seed_wind_night_list5day"
@@ -191,7 +197,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@+id/temperature_min_5day"
-            android:layout_above="@+id/image_list_5day_icon_night"/>
+            android:layout_above="@+id/image_list_5day_icon_night"
+            tools:ignore="SmallSp" />
 
         <ImageView
             android:id="@+id/image_list_5day_icon_night"
@@ -204,7 +211,8 @@
             android:transformPivotX="15dp"
             android:contentDescription=""
             android:layout_below="@+id/temperature_min_5day"
-            android:layout_alignParentStart="true"/>
+            android:layout_alignParentStart="true"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:text="@string/text_string_opadu"
@@ -213,7 +221,7 @@
             android:id="@+id/textView6"
             android:textColor="@color/text_list_night"
             android:textSize="12sp"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="5dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"/>
 
@@ -226,7 +234,8 @@
             tools:text="100%"
             android:paddingStart="20dp"
             android:layout_below="@+id/textView6"
-            android:layout_alignStart="@+id/textView6"/>
+            android:layout_alignStart="@+id/textView6"
+            tools:ignore="RtlSymmetry" />
 
         <ImageView
             android:id="@+id/image__umbrella_list_5day_icon_night"
@@ -238,6 +247,7 @@
             android:scaleY="0.6"
             android:translationY="-6dp"
             android:layout_below="@+id/textView6"
-            android:layout_alignStart="@+id/textView6"/>
+            android:layout_alignStart="@+id/textView6"
+            tools:ignore="ContentDescription" />
     </RelativeLayout>
 </LinearLayout>
