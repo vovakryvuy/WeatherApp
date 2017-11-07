@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              xmlns:card_view="http://schemas.android.com/apk/res-auto"
-              android:baselineAligned="false">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:baselineAligned="false">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -21,17 +21,16 @@
 
             <TextView
                 android:id="@+id/text_time"
-                android:text="12:00"
                 android:textSize="20sp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                tool:text="12:00"/>
 
             <ImageView
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_wall_thermometer"
                 android:id="@+id/image_termometer_12"
                 android:layout_width="20dp"
                 android:scaleType="center"
@@ -39,10 +38,11 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:scaleY="1.6"
-                android:scaleX="1.6"/>
+                android:scaleX="1.6"
+                tool:src="@drawable/ic_wall_thermometer"
+                tool:ignore="ContentDescription" />
 
             <TextView
-                android:text="13 C"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/text_temperature"
@@ -51,10 +51,10 @@
                 android:layout_marginTop="3dp"
                 android:textColor="@android:color/background_dark"
                 android:textSize="17sp"
-                android:textStyle="normal|bold"/>
+                android:textStyle="normal|bold"
+                tool:text="13 C"/>
 
             <TextView
-                android:text="35 C"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/text_real_feel_temperature"
@@ -62,7 +62,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_toEndOf="@+id/image_termometer_12"
                 android:textSize="10sp"
-                />
+                tool:text="35 C"
+                tool:ignore="SmallSp" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -81,7 +82,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_cardinal_points_on_winds_star_symbol"
-                    android:paddingRight="3dp"/>
+                    android:paddingRight="3dp"
+                   tool:ignore="ContentDescription,RtlSymmetry" />
 
             <ImageView
                 android:layout_width="28dp"
@@ -90,12 +92,12 @@
                 android:src="@drawable/ic_upwards_arrow_4"
                 android:id="@+id/image_diraction_wind_12"
                 android:tint="@color/cardview_shadow_end_color"
-                android:rotation="0"/>
+                android:rotation="0"
+                tool:ignore="ContentDescription" />
              </FrameLayout>
 
 
             <TextView
-                android:text="11.3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
@@ -104,10 +106,12 @@
                 android:textColor="@android:color/background_dark"
                 android:layout_alignTop="@+id/relativeLayout"
                 android:layout_marginRight="55dp"
-                android:layout_alignParentEnd="true"/>
+                android:layout_alignParentEnd="true"
+                tool:text="11.3"
+                tool:ignore="RelativeOverlap" />
 
             <TextView
-                android:text="@string/metric_km_h_string_en"
+                android:text="@string/metric_km_h_string"
                 android:id="@+id/km_h_string"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -127,7 +131,7 @@
                 android:layout_marginStart="22dp">
 
                 <TextView
-                    android:text="%"
+                    android:text="@string/string_percent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBaseline="@+id/text_precipitation"
@@ -137,7 +141,7 @@
                     android:id="@+id/textView2"/>
 
                 <TextView
-                    android:text="100"
+                    tool:text="100"
                     android:layout_height="wrap_content"
                     android:id="@+id/text_precipitation"
                     android:layout_below="@+id/drop_icon"
@@ -155,9 +159,10 @@
                     android:id="@+id/drop_icon"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:src="@drawable/ic_drop_0"
                     android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"/>
+                    android:layout_centerHorizontal="true"
+                    tool:src="@drawable/ic_drop_0"
+                    tool:ignore="ContentDescription" />
             </RelativeLayout>
 
             <ImageView
@@ -172,7 +177,8 @@
                 android:layout_marginStart="36dp"
                 android:adjustViewBounds="false"
                 android:baselineAlignBottom="false"
-                android:cropToPadding="true"/>
+                android:cropToPadding="true"
+                tool:ignore="ContentDescription" />
 
             <TextView
                 android:text="@string/real_feel_temperature_string"
@@ -183,9 +189,8 @@
                 android:id="@+id/textView"
                 android:layout_marginLeft="2dp"
                 android:layout_alignParentBottom="true"
-                android:layout_toEndOf="@+id/text_real_feel_temperature"/>
-
-
+                android:layout_toEndOf="@+id/text_real_feel_temperature"
+                tool:ignore="RelativeOverlap,SmallSp" />
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

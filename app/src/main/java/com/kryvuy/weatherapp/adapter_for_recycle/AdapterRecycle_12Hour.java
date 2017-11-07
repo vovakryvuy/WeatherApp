@@ -27,16 +27,18 @@ public class AdapterRecycle_12Hour extends RecyclerView.Adapter<AdapterRecycle_1
     private Context mContext;
     private List<String> list_time = new ArrayList<>();
     private List<Double> mTemperature_Double = new ArrayList<>();
-    private List<String> mRealFeelTemperature = new ArrayList<>();
+    private List<Double> mRealFeelTemperature = new ArrayList<>();
     private List<Double> mWindSpeed = new ArrayList<>();
     private List<Integer> mDirectionWind = new ArrayList<>();
     private List<Integer> mNumberIcon = new ArrayList<>();
     private List<Integer> mPrecipitation = new ArrayList<>();
+    private String celsium;
     private Realm mRealm;
     private ControlMeasurements mControlMeasurements = new ControlMeasurements();
 
     public AdapterRecycle_12Hour(List<Hourly_12HourModel> list, Context context) {
         this.mContext = context;
+        this.celsium = context.getResources().getString(R.string.string_celsius);
         if (list!=null){
             this.list_time = mControlMeasurements.parseTime(list);
             this.mTemperature_Double = mControlMeasurements.parseTemperature_Double(list);
@@ -53,7 +55,7 @@ public class AdapterRecycle_12Hour extends RecyclerView.Adapter<AdapterRecycle_1
                 for (DatabaseWetherTwelveHour twelveHour : wetherTwelveHours) {
                     this.list_time.add(twelveHour.getTime());
                     this.mTemperature_Double.add(twelveHour.getTemperature());
-                    this.mRealFeelTemperature.add(String.valueOf(twelveHour.getRealFeelTemperature()));
+                    this.mRealFeelTemperature.add(twelveHour.getRealFeelTemperature());
                     this.mNumberIcon.add(twelveHour.getIdIcon());
                     this.mWindSpeed.add(twelveHour.getSpeedWind());
                     this.mDirectionWind.add(twelveHour.getDirectionWind());
@@ -62,7 +64,7 @@ public class AdapterRecycle_12Hour extends RecyclerView.Adapter<AdapterRecycle_1
             }else {
                 this.list_time.add("---");
                 this.mTemperature_Double.add(0.0);
-                this.mRealFeelTemperature.add("---");
+                this.mRealFeelTemperature.add(0.0);
                 this.mNumberIcon.add(0);
                 this.mWindSpeed.add(0.0);
                 this.mDirectionWind.add(0);
@@ -81,16 +83,14 @@ public class AdapterRecycle_12Hour extends RecyclerView.Adapter<AdapterRecycle_1
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mTextTime.setText(list_time.get(position));
-        holder.mTextTemperature.setText(String.valueOf(mTemperature_Double.get(position)));
-        holder.mTextRealFeelTemperature.setText(mRealFeelTemperature.get(position));
+        holder.mTextTemperature.setText(String.valueOf(mTemperature_Double.get(position))+celsium);
+        holder.mTextRealFeelTemperature.setText(String.valueOf(mRealFeelTemperature.get(position))+celsium);
         holder.mImageTermometer.setColorFilter(
                 mControlMeasurements.getColorChengeTermometer(mTemperature_Double.get(position),mContext));
         holder.mWeatherIcon.setImageDrawable(
                 mContext.getDrawable(mControlMeasurements.getDrawableWeatherIcon(mNumberIcon.get(position))));
-
         holder.mImageDrop.setImageDrawable(
                 mContext.getDrawable(mControlMeasurements.getDrawableDropIcon(mPrecipitation.get(position))));
-
         holder.mTextWindSpeed.setText(String.valueOf(mWindSpeed.get(position)));
         holder.mTextPrecipitation.setText(String.valueOf(mPrecipitation.get(position)));
         animationRotationWindDirection(holder.mImageDiractionWind,position);

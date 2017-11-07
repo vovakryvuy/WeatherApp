@@ -29,23 +29,27 @@ import retrofit2.Response;
  * Created by Володимир on 4/29/2017.
  */
 public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5Days.ViewHolder> {
-    private List<String> mDayTemperature = new ArrayList<>();
-    private List<String> mNightTemperature = new ArrayList<>();
+    private List<Double> mDayTemperature = new ArrayList<>();
+    private List<Double> mNightTemperature = new ArrayList<>();
     private List<String> mDayAndMonth = new ArrayList<>();
     private List<Integer> mIdIconDay = new ArrayList<>();
     private List<Integer> mIdIconNight = new ArrayList<>();
     private List<String> mDescribeDay = new ArrayList<>();
     private List<String> mDescribeNight = new ArrayList<>();
-    private List<String> mSpeedWindDay = new ArrayList<>();
-    private List<String> mSpeedWindNight = new ArrayList<>();
+    private List<Integer> mSpeedWindDay = new ArrayList<>();
+    private List<Integer> mSpeedWindNight = new ArrayList<>();
     private List<Integer> mPrecipationDay = new ArrayList<>();
     private List<Integer> mPrecipationNight = new ArrayList<>();
+    private String celsium;
+    private String km_h;
     private List<DailyForecast> mDailyForecasts;
     private Context mContext;
     private Realm mRealm;
     private ControlMeasurements mMeasurements = new ControlMeasurements();
     public AdapterRecycle_5Days(Daily_FiveDay weatherFiveDay, Context context){
         this.mContext = context;
+        this.celsium = context.getResources().getString(R.string.string_celsius);
+        this.km_h = context.getResources().getString(R.string.metric_km_h_string);
        /*
         TEST*/
         if (weatherFiveDay!=null){
@@ -68,28 +72,28 @@ public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5D
                         mRealm.where(DatabaseWetherFiveDay.class).findAll();
                 Log.d(MainActivity.LOG_TAG, "AdapterRecycle_5Days: GET realm data");
                 for (DatabaseWetherFiveDay fiveDay : wetherFiveDays) {
-                    this.mDayTemperature.add(fiveDay.getDayTemperature().toString());
-                    this.mNightTemperature.add(fiveDay.getNightTemperature().toString());
+                    this.mDayTemperature.add(fiveDay.getDayTemperature());
+                    this.mNightTemperature.add(fiveDay.getNightTemperature());
                     this.mDayAndMonth.add(fiveDay.getData());
                     this.mIdIconDay.add(fiveDay.getDayIdIcon());
                     this.mIdIconNight.add(fiveDay.getNightIdIcon());
                     this.mDescribeDay.add(fiveDay.getDayDiscribe());
                     this.mDescribeNight.add(fiveDay.getNightDiscribe());
-                    this.mSpeedWindDay.add(String.valueOf(fiveDay.getDaySpeedWind()));
-                    this.mSpeedWindNight.add(String.valueOf(fiveDay.getNightSpeedWind()));
+                    this.mSpeedWindDay.add(fiveDay.getDaySpeedWind());
+                    this.mSpeedWindNight.add(fiveDay.getNightSpeedWind());
                     this.mPrecipationDay.add(fiveDay.getDayPrecipation());
                     this.mPrecipationNight.add(fiveDay.getNightPrecipation());
                 }
             }else {
-                this.mDayTemperature.add("---");
-                this.mNightTemperature.add("---");
+                this.mDayTemperature.add(0.0);
+                this.mNightTemperature.add(0.0);
                 this.mDayAndMonth.add("---");
                 this.mIdIconDay.add(0);
                 this.mIdIconNight.add(0);
                 this.mDescribeDay.add("---");
                 this.mDescribeNight.add("---");
-                this.mSpeedWindDay.add("---");
-                this.mSpeedWindNight.add("---");
+                this.mSpeedWindDay.add(0);
+                this.mSpeedWindNight.add(0);
                 this.mPrecipationDay.add(0);
                 this.mPrecipationNight.add(0);
 
@@ -109,8 +113,8 @@ public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5D
         /*infotmation in to */
         final int posit = position;
 
-        holder.mTextTempMax.setText(mDayTemperature.get(position));
-        holder.mTextTempMin.setText(mNightTemperature.get(position));
+        holder.mTextTempMax.setText(mDayTemperature.get(position)+celsium);
+        holder.mTextTempMin.setText(mNightTemperature.get(position)+celsium);
         holder.mTextDate.setText(mDayAndMonth.get(position));
         holder.mImageIconDay.setImageDrawable(mContext
                 .getDrawable(mMeasurements.getDrawableWeatherIcon(mIdIconDay.get(position))));
@@ -119,8 +123,8 @@ public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5D
         holder.mTextDescribeDay.setText(mDescribeDay.get(position));
         holder.mTextDescribeDay.setTextAppearance(mContext,R.style.TextWithWightShadow);
         holder.mTextDescribeNight.setText(mDescribeNight.get(position));
-        holder.mTextSpeedWindDay.setText(mSpeedWindDay.get(position));
-        holder.mTextSpeedWindNight.setText(mSpeedWindNight.get(position));
+        holder.mTextSpeedWindDay.setText(mSpeedWindDay.get(position)+km_h);
+        holder.mTextSpeedWindNight.setText(mSpeedWindNight.get(position)+km_h);
         holder.mTextPrecipationDay.setText(String.valueOf(mPrecipationDay.get(position)+"%"));
         holder.mTextPrecipationNight.setText(String.valueOf(mPrecipationNight.get(position)+"%"));
         if(mMeasurements.getDrawableUmbrella(mPrecipationDay.get(position))){
@@ -184,20 +188,17 @@ public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5D
         }
         return list;
     }
-    private List<String> getSpeedWindDay(List<DailyForecast> dailyForecasts){
-        List<String> list = new ArrayList<>();
+    private List<Integer> getSpeedWindDay(List<DailyForecast> dailyForecasts){
+        List<Integer> list = new ArrayList<>();
         for (DailyForecast dailyForecast : dailyForecasts) {
-            list.add(String.valueOf(dailyForecast.getDay().getWind().getSpeed().getValue().intValue()
-                    +dailyForecast.getNight().getWind().getSpeed().getUnit()));
+            list.add(dailyForecast.getDay().getWind().getSpeed().getValue().intValue());
         }
         return list;
     }
-    private List<String> getSpeedWindNight(List<DailyForecast> dailyForecasts){
-        List<String> list = new ArrayList<>();
+    private List<Integer> getSpeedWindNight(List<DailyForecast> dailyForecasts){
+        List<Integer> list = new ArrayList<>();
         for (DailyForecast dailyForecast : dailyForecasts) {
-            list.add(String.valueOf(dailyForecast.getNight().getWind().getSpeed().getValue().intValue()
-                    +dailyForecast.getNight().getWind().getSpeed().getUnit()));
-
+            list.add(dailyForecast.getNight().getWind().getSpeed().getValue().intValue());
         }
         return list;
     }
@@ -236,17 +237,17 @@ public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5D
         }
         return list;
     }
-    private List<String> getDayTemperature(List<DailyForecast> daily_fiveDay){
-        List<String> list = new ArrayList<>();
+    private List<Double> getDayTemperature(List<DailyForecast> daily_fiveDay){
+        List<Double> list = new ArrayList<>();
         for (DailyForecast dailyForecast : daily_fiveDay) {
-            list.add(dailyForecast.getTemperature().getMaximum().getValue()+"°C");
+            list.add(dailyForecast.getTemperature().getMaximum().getValue());
         }
         return list;
     }
-    private List<String> getNightTemperature(List<DailyForecast> daily_fiveDay){
-        List<String> list = new ArrayList<>();
+    private List<Double> getNightTemperature(List<DailyForecast> daily_fiveDay){
+        List<Double> list = new ArrayList<>();
         for (DailyForecast dailyForecast : daily_fiveDay) {
-            list.add(dailyForecast.getTemperature().getMinimum().getValue()+"°C");
+            list.add(dailyForecast.getTemperature().getMinimum().getValue());
         }
         return list;
     }

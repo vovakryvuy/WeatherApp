@@ -1,4 +1,5 @@
 package com.kryvuy.weatherapp;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -27,14 +28,10 @@ import com.kryvuy.weatherapp.start.Constant;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Callable;
 
 import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.exceptions.RealmMigrationNeededException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,9 +50,13 @@ public class MainWeatherActivity extends AppCompatActivity
     private SearchView searchView;
     private DialogSearchCity mDialogFragment = new DialogSearchCity();
     private List<String> mListCity_CountryName = new ArrayList<>();
+    private List<DatabaseWetherFiveDay> mDatabaseWetherFiveDayList;
+    private List<DatabaseWetherTwelveHour> mDatabaseWetherTwelveHourList;
+    private Boolean mStatusTTS = false;
+    private int mCount_wetherDays = 0;
+    private int mCount_wetherHours = 0;
     private Realm mRealm;
     private TextToSpeech mTextToSpeech;
-    private DatabaseWetherFiveDay mDatabaseWetherFiveDay;
 
 
     @Override
@@ -68,6 +69,9 @@ public class MainWeatherActivity extends AppCompatActivity
         inizializi RealmDataBase*/
             mRealm = Realm.getDefaultInstance();
 
+        /*
+        create weather list for TTS*/
+            createWetherListForTTS();
         /*
         inizializi TextToSpeech*/
         mTextToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -140,6 +144,7 @@ public class MainWeatherActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         mRealm.close();
+        mTextToSpeech.stop();
     }
 
     @Override
@@ -218,14 +223,28 @@ public class MainWeatherActivity extends AppCompatActivity
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP){
-            Log.d(MainActivity.LOG_TAG,"PRESSS BUTTON DOWN AND UP");
-            mTextToSpeech.stop();
-            mTextToSpeech.speak("The wether is good 12 °C",TextToSpeech.QUEUE_FLUSH,null,null);
-            return true;
-        }else {
-            return super.onKeyDown(keyCode, event);
+        if (mStatusTTS){
+            switch (keyCode){
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                    Log.d(MainActivity.LOG_TAG, "PRESSS BUTTON UP start speech 5Days");
+                        mTextToSpeech.stop();
+                        mTextToSpeech.speak(speechAboutDaysWether(mCount_wetherDays % 5)
+                                ,TextToSpeech.QUEUE_FLUSH,null,null);
+                        mCount_wetherDays++;
+                    break;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    Log.d(MainActivity.LOG_TAG, "PRESSS BUTTON DOWN start speech 12Hours");
+                        mTextToSpeech.stop();
+                        mTextToSpeech.speak(speechAboutHoursWeather(mCount_wetherHours % 12)
+                                , TextToSpeech.QUEUE_FLUSH, null, null);
+                        mCount_wetherHours++;
+                    break;
+                default:
+                    return super.onKeyDown(keyCode, event);
+
+            }
         }
+        return true;
     }
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
@@ -359,6 +378,7 @@ public class MainWeatherActivity extends AppCompatActivity
             databaseWetherTwelveHour.setRealFeelTemperature(hourlyForecast
                     .getRealFeelTemperature().getValue());
 
+
             Log.d(MainActivity.LOG_TAG, "Icon ID ="+hourlyForecast.getWeatherIcon());
             databaseWetherTwelveHour.setIdIcon(hourlyForecast.getWeatherIcon());
 
@@ -389,14 +409,66 @@ public class MainWeatherActivity extends AppCompatActivity
         mRealm.commitTransaction();
     }
 
-    public void downloadDateAboiutFiveDayRealm(){
-        List<DatabaseWetherFiveDay> databaseWetherFiveDayList;
-               databaseWetherFiveDayList = mRealm.where(DatabaseWetherFiveDay.class).findAll();
-        for (DatabaseWetherFiveDay databaseWetherFiveDay:  databaseWetherFiveDayList) {
-            Log.d(MainActivity.LOG_TAG, "downloadDateAboiutFiveDayRealm: ");
-            Log.d(MainActivity.LOG_TAG, ""+databaseWetherFiveDay.getData()+"\n"
-                    +""+databaseWetherFiveDay.getDayDiscribe()+"\n");
-
+    public void createWetherListForTTS(){
+        if (mRealm.where(DatabaseWetherTwelveHour.class).isValid() && mRealm.where(DatabaseWetherFiveDay.class).isValid()){
+            mDatabaseWetherFiveDayList = mRealm.where(DatabaseWetherFiveDay.class).findAll();
+            mDatabaseWetherTwelveHourList = mRealm.where(DatabaseWetherTwelveHour.class).findAll();
+            mStatusTTS = true;
+        }else{
+            mStatusTTS = false;
         }
     }
+
+    public StringBuilder speechAboutHoursWeather(int i){
+        Context context = getApplicationContext();
+        StringBuilder speech = new StringBuilder();
+        speech.append(mDatabaseWetherTwelveHourList.get(i).getTime().substring(0,2))
+                .append(" ")
+                .append(context.getResources().getString(R.string.string_tts_hour))
+                .append(" ")
+                .append(context.getResources().getString(R.string.string_tts_temperature))
+                .append(" ")
+                .append(mDatabaseWetherTwelveHourList.get(i).getTemperature())
+                .append(context.getResources().getString(R.string.string_celsius))
+                .append(" ")
+                .append(context.getResources().getString(R.string.string_tts_speed_wind))
+                .append(" ")
+                .append(Math.floor(mDatabaseWetherTwelveHourList.get(i).getSpeedWind()))
+                .append(" ")
+                .append(context.getResources().getString(R.string.string_tts_km_h));
+        if (speech.length() == 0){
+            speech.append(getApplicationContext().getResources().getString(R.string.string_tts_no_data));
+        }
+        return speech;
+    }
+
+    public StringBuilder speechAboutDaysWether(int i){
+        Context context = getApplicationContext();
+        StringBuilder speech = new StringBuilder();
+        if(i==0)
+            speech.append(context.getResources().getString(R.string.string_tts_today));
+
+        if(i==1)
+            speech.append(context.getResources().getString(R.string.string_tts_tomorrow));
+
+        speech.append(mDatabaseWetherFiveDayList.get(i).getData())
+                .append(" ")
+                .append(context.getResources().getString(R.string.string_tts_on_day))
+                .append(mDatabaseWetherFiveDayList.get(i).getDayTemperature())
+                .append(context.getResources().getString(R.string.string_celsius))
+                .append(" ")
+                .append(mDatabaseWetherFiveDayList.get(i).getDayDiscribe())
+                .append(" ")
+                .append(context.getResources().getString(R.string.string_tts_in_the_night))
+                .append(mDatabaseWetherFiveDayList.get(i).getNightTemperature())
+                .append(" ")
+                .append(context.getResources().getString(R.string.string_celsius))
+                .append(" ")
+                .append(mDatabaseWetherFiveDayList.get(i).getNightDiscribe());
+        return speech;
+    }
+
+
 }
+
+

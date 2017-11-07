@@ -216,18 +216,16 @@ public class ControlMeasurements {
 
     public List<Double> parseTemperature_Double(List<Hourly_12HourModel> list){
         List<Double> mTemperature_Double = new ArrayList<>();
-        String celcie = "°C";
         for (Hourly_12HourModel hourModel : list){
             mTemperature_Double.add(hourModel.getTemperature().getValue());
         }
         return mTemperature_Double;
     }
 
-    public List<String> parseTemperatureRealFeel(List<Hourly_12HourModel> list){
-        List<String> mRealFeelTemperature = new ArrayList<>();
-        String celcie = "°C";
+    public List<Double> parseTemperatureRealFeel(List<Hourly_12HourModel> list){
+        List<Double> mRealFeelTemperature = new ArrayList<>();
         for (Hourly_12HourModel hourModel : list){
-            mRealFeelTemperature.add(String.valueOf(hourModel.getRealFeelTemperature().getValue())+celcie);
+            mRealFeelTemperature.add(hourModel.getRealFeelTemperature().getValue());
         }
         return mRealFeelTemperature;
     }

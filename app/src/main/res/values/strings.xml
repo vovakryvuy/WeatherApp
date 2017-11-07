@@ -1,11 +1,21 @@
 <resources >
     <string name="app_name">WeatherApp</string>
-    <string name="_text_city">Місто: </string>
-    <string name="_text_country">Країна: </string>
-    <string name="real_feel_temperature_string">по відчутю</string>
+    <string name="_text_city">City: </string>
+    <string name="_text_country">Country: </string>
+    <string name="real_feel_temperature_string">real feel</string>
     <string name="metric_km_h_string">km/h</string>
-
-    <string name="text_dialog_fragment_no_internet">Виберіть варіант для підключення інтернет звязку</string>
-    <string name="text_string_opadu">опади:</string>
+    <string name="string_percent">%</string>
+    <string name="text_dialog_fragment_no_internet">Choose conect to internet</string>
+    <string name="text_string_opadu">precipitation:</string>
     <string name="string_celsius">°C</string>
+    <string name="string_tts_no_data">no data</string>
+    <string name="string_tts_hour">hour</string>
+    <string name="string_tts_the_weather_is">the weather is</string>
+    <string name="string_tts_speed_wind">speed wind</string>
+    <string name="string_tts_km_h">kilometers per hour</string>
+    <string name="string_tts_temperature">temperature</string>
+    <string name="string_tts_today">today</string>
+    <string name="string_tts_tomorrow">tomorrow</string>
+    <string name="string_tts_on_day">on day</string>
+    <string name="string_tts_in_the_night">in the night</string>
 </resources>

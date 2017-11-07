@@ -19,6 +19,7 @@ public class DatabaseWetherTwelveHour extends RealmObject {
     private double speedWind;
     private int directionWind;
 
+
     public int getId() {
         return id;
     }
