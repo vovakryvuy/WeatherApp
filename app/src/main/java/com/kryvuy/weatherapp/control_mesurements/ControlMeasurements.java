@@ -167,7 +167,7 @@ public class ControlMeasurements {
         String date;
         /*SimpleDateFormat simpleDateFormat_day = new SimpleDateFormat("d");*/
         /*SimpleDateFormat simpleDateFormat_month = new SimpleDateFormat("MMMM",new Locale("uk","UA"));*/
-        SimpleDateFormat simpleDateFormat_month = new SimpleDateFormat("EEEE, d MMM",new Locale("uk","UA"));
+        SimpleDateFormat simpleDateFormat_month = new SimpleDateFormat("EEEE,d MMMM",new Locale("uk","UA"));
         Calendar calendar = parseDate(in_date);
 
         date = simpleDateFormat_month.format(calendar.getTime());

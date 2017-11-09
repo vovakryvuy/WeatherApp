@@ -6,14 +6,17 @@
               android:layout_height="@dimen/height_5day_list"
               android:orientation="vertical"
               android:baselineAligned="false">
+
     <TextView
         android:id="@+id/text_data_list_5day"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/backdown_2dp_list_5day"
+        android:layout_marginLeft="@dimen/land_list5day"
+        android:paddingBottom="@dimen/backdown_2dp_list_5day"
+        android:paddingTop="@dimen/backdown_2dp_list_5day"
         android:background="@drawable/gradient_color_date_list5day"
-        android:textAlignment="center"
-        tools:text="Пятниця, 5 Лис"
+        android:textAlignment="viewStart"
+        tools:text="Пятниця, 25 листопада."
         android:textSize="@dimen/text_size_list_5day"
         android:textColor="@color/gradient_list_night_end"/>
 
@@ -70,15 +73,14 @@
             tools:ignore="ContentDescription" />
 
         <TextView
-            android:text="@string/text_string_opadu"
+            android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView5"
-            android:textColor="@color/text_list_day"
-            android:textSize="12sp"
-            android:layout_marginRight="5dp"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"/>
+            android:text="@string/text_string_opadu"
+            android:textColor="@color/text_list_day"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/text_seed_wind_day_list5day"
@@ -215,15 +217,14 @@
             tools:ignore="ContentDescription" />
 
         <TextView
-            android:text="@string/text_string_opadu"
+            android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView6"
-            android:textColor="@color/text_list_night"
-            android:textSize="12sp"
-            android:layout_marginRight="5dp"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"/>
+            android:text="@string/text_string_opadu"
+            android:textColor="@color/text_list_night"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/text_precipation_night_list5day"

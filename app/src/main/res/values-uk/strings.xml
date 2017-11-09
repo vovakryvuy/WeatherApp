@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="_text_city">Місто:</string>
+    <string name="_text_country">Країнa:</string>
+    <string name="real_feel_temperature_string">по відчуттю</string>
+    <string name="metric_km_h_string">км/год</string>
+    <string name="text_dialog_fragment_no_internet">Виберіть спосіб підключення</string>
+    <string name="text_string_opadu">опади:</string>
+    <string name="string_tts_no_data">немає даних</string>
+    <string name="string_tts_hour">година</string>
+    <string name="string_tts_the_weather_is">"погода є"</string>
+    <string name="string_tts_speed_wind">швидкість вітру</string>
+    <string name="string_tts_km_h">кілометрів за годину</string>
+    <string name="string_tts_temperature">температура</string>
+    <string name="string_tts_today">сьогодні</string>
+    <string name="string_tts_tomorrow">завтра</string>
+    <string name="string_tts_on_day">в день</string>
+    <string name="string_tts_in_the_night">в ночі</string>
+</resources>

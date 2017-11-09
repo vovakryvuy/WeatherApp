@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -59,17 +60,14 @@ public class MainWeatherActivity extends AppCompatActivity
     private Realm mRealm;
     private TextToSpeech mTextToSpeech;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wether_main_layout);
         Log.d(MainActivity.LOG_TAG,"-----------START------------");
-
         /*
         inizializi RealmDataBase*/
             mRealm = Realm.getDefaultInstance();
-
         /*
         create weather list for TTS*/
             createWetherListForTTS();
@@ -84,20 +82,21 @@ public class MainWeatherActivity extends AppCompatActivity
             }
         });
 
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
         /*
         Get Preferenses key City */
         Intent intent = getIntent();
-        mKeyCity = intent.getStringExtra(Constant.EXTRA_KEY_LOCATION_CITY);
+        mKeyCity = intent.getStringExtra(MainWeatherActivity.EXTRA_KEY_CITY);
+
         //mKeyCity = intent.getStringExtra(EXTRA_KEY_CITY);
 
         /*
         save city_key in SharePreferences*/
         saveCityKeySharedPreferences(intent);
-        Log.d(MainActivity.LOG_TAG,"Save city key = "
-                + intent.getStringExtra(Activity_OneDayWeather.EXTRA_KEY_LOCATION_CITY)
-                + " in SharePreferences");
+
 
         /*
         RecycleView 5Days Wether*/
@@ -112,7 +111,7 @@ public class MainWeatherActivity extends AppCompatActivity
         mRecyclerViewHours.setLayoutManager(
                 new LinearLayoutManager(MainWeatherActivity.this,LinearLayoutManager.VERTICAL,false));
 
-        Service_Retrofit.getService().getDaily_5Day(mKeyCity,Constant.API_KEY,Constant.LANGUAGE,true,true)
+        Service_Retrofit.getService().getDaily_5Day(mKeyCity,Constant.API_KEY,Constant.LANGUAGE_UA,true,true)
                 .enqueue(new Callback<Daily_FiveDay>() {
                     @Override
                     public void onResponse(Call<Daily_FiveDay> call, Response<Daily_FiveDay> response) {
@@ -123,27 +122,29 @@ public class MainWeatherActivity extends AppCompatActivity
                     }
                     @Override
                     public void onFailure(Call<Daily_FiveDay> call, Throwable t) {
+                        Log.d(MainActivity.LOG_TAG, "onFailure: "+t.getMessage()+ " open realm and push data");
                         mRecyclerViewDays.setAdapter(new AdapterRecycle_5Days(null,getApplicationContext()));
                     }
                 });
 
-        Service_Retrofit.getService().getHourly_12Hour(mKeyCity,Constant.API_KEY,Constant.LANGUAGE,true,true)
+        Service_Retrofit.getService().getHourly_12Hour(mKeyCity,Constant.API_KEY,Constant.LANGUAGE_UA,true,true)
                 .enqueue(new Callback<List<Hourly_12HourModel>>() {
                     @Override
                     public void onResponse(Call<List<Hourly_12HourModel>> call, Response<List<Hourly_12HourModel>> response) {
+
                         mRecyclerViewHours.setAdapter(new AdapterRecycle_12Hour(response.body(),getApplicationContext()));
-                         /*
+                        /*
                         save twelve hours in database*/
                         try {
                             saveTwelveHoursInDatabaseRealm(response.body());
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-
                     }
 
                     @Override
                     public void onFailure(Call<List<Hourly_12HourModel>> call, Throwable t) {
+                        Log.d(MainActivity.LOG_TAG, "onFailure: "+t.getMessage()+ " open realm and push data");
                         mRecyclerViewHours.setAdapter(new AdapterRecycle_12Hour(null,getApplicationContext()));
                     }
                 });
@@ -154,9 +155,8 @@ public class MainWeatherActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         mRealm.close();
-        mTextToSpeech.stop();
+        mTextToSpeech.shutdown();
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_item_toolbar, menu);
@@ -180,17 +180,14 @@ public class MainWeatherActivity extends AppCompatActivity
         searchView.setOnQueryTextListener(this);*/
         return true;
     }
-
     @Override
     public boolean onMenuItemActionExpand(MenuItem item) {
         return false;
     }
-
     @Override
     public boolean onMenuItemActionCollapse(MenuItem item) {
         return false;
     }
-
     @Override
     public boolean onQueryTextSubmit(String query) {
         Log.d(MainActivity.LOG_TAG, "MainWeatherActivity  onQueryTextSubmit: "+query);
@@ -224,6 +221,7 @@ public class MainWeatherActivity extends AppCompatActivity
         Log.d(MainActivity.LOG_TAG, "MainWeatherActivity  onQueryTextChange: "+newText);
         return true;
     }
+
     private void getCityAndCounrty(List<SearchCityByName> listCity){
         for (SearchCityByName searchCityByName : listCity) {
             mListCity_CountryName.add(getString(R.string._text_city) +" "+ searchCityByName.getLocalizedName()+"\n"+
@@ -435,16 +433,16 @@ public class MainWeatherActivity extends AppCompatActivity
         speech.append(mDatabaseWetherTwelveHourList.get(i).getTime().substring(0,2))
                 .append(" ")
                 .append(context.getResources().getString(R.string.string_tts_hour))
-                .append(" ")
+                .append(",")
                 .append(context.getResources().getString(R.string.string_tts_temperature))
                 .append(" ")
                 .append(mDatabaseWetherTwelveHourList.get(i).getTemperature())
                 .append(context.getResources().getString(R.string.string_celsius))
-                .append(" ")
+                .append(",")
                 .append(context.getResources().getString(R.string.string_tts_speed_wind))
                 .append(" ")
                 .append(Math.floor(mDatabaseWetherTwelveHourList.get(i).getSpeedWind()))
-                .append(" ")
+                .append(",")
                 .append(context.getResources().getString(R.string.string_tts_km_h));
         if (speech.length() == 0){
             speech.append(getApplicationContext().getResources().getString(R.string.string_tts_no_data));
@@ -461,33 +459,29 @@ public class MainWeatherActivity extends AppCompatActivity
         if(i==1)
             speech.append(context.getResources().getString(R.string.string_tts_tomorrow));
 
-        speech.append(mDatabaseWetherFiveDayList.get(i).getData())
-                .append(" ")
+        speech.append(" ")
+                .append(mDatabaseWetherFiveDayList.get(i).getData())
+                .append(",")
                 .append(context.getResources().getString(R.string.string_tts_on_day))
+                .append(" ")
                 .append(mDatabaseWetherFiveDayList.get(i).getDayTemperature())
                 .append(context.getResources().getString(R.string.string_celsius))
                 .append(" ")
                 .append(mDatabaseWetherFiveDayList.get(i).getDayDiscribe())
-                .append(" ")
+                .append(",")
                 .append(context.getResources().getString(R.string.string_tts_in_the_night))
+                .append(" ")
                 .append(mDatabaseWetherFiveDayList.get(i).getNightTemperature())
                 .append(" ")
                 .append(context.getResources().getString(R.string.string_celsius))
-                .append(" ")
+                .append(",")
                 .append(mDatabaseWetherFiveDayList.get(i).getNightDiscribe());
         return speech;
     }
 
     private void saveCityKeySharedPreferences(Intent intent){
-        /*SharedPreferences sharedPreferences = getSharedPreferences(Constant.SAVE_CITY_KEY,Context.MODE_PRIVATE);
-        if (intent != null){
-            String city_key = intent.getStringExtra(Constant.EXTRA_KEY_LOCATION_CITY);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(Constant.SAVE_CITY_KEY, mKeyCity);
-            editor.apply();
-        }*/
         SharedPreferences sharedPreferences = getSharedPreferences(Constant.SAVE_CITY_KEY,Context.MODE_PRIVATE);
-        if (!sharedPreferences.contains(Constant.SAVE_CITY_KEY)){
+        if (!sharedPreferences.contains(Constant.SAVE_CITY_KEY) && mKeyCity != null){
             String city_key = intent.getStringExtra(Constant.EXTRA_KEY_LOCATION_CITY);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(Constant.SAVE_CITY_KEY, mKeyCity);

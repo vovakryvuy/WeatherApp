@@ -5,7 +5,7 @@
     <dimen name="text_size_wind_speed">18sp</dimen>
 
     <dimen name="height_5day_list">220dp</dimen>
-    <dimen name="width_5day_list">120dp</dimen>
+    <dimen name="width_5day_list">135dp</dimen>
     <dimen name="backdown_2dp_list_5day">2dp</dimen>
     <dimen name="land_list5day">1dp</dimen>
     <dimen name="text_size_list_5day">12sp</dimen>

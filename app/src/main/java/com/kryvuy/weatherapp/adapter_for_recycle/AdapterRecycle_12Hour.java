@@ -85,6 +85,7 @@ public class AdapterRecycle_12Hour extends RecyclerView.Adapter<AdapterRecycle_1
         holder.mTextTime.setText(list_time.get(position));
         holder.mTextTemperature.setText(String.valueOf(mTemperature_Double.get(position))+celsium);
         holder.mTextRealFeelTemperature.setText(String.valueOf(mRealFeelTemperature.get(position))+celsium);
+        holder.mImageTermometer.setVisibility(View.VISIBLE);
         holder.mImageTermometer.setColorFilter(
                 mControlMeasurements.getColorChengeTermometer(mTemperature_Double.get(position),mContext));
         holder.mWeatherIcon.setImageDrawable(

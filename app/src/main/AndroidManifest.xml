@@ -13,14 +13,16 @@
         android:name=".api.Service_Retrofit"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>-->
         </activity>
         <activity android:name=".Activity_OneDayWeather"/>
-        <activity android:name=".MainWeatherActivity">
+        <activity android:name=".MainWeatherActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable">
@@ -28,7 +30,8 @@
         </activity>
 
 
-        <activity android:name=".start.SplashActivity">
+        <activity android:name=".start.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

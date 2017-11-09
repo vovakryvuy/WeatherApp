@@ -4,14 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 
 import com.kryvuy.weatherapp.MainActivity;
 import com.kryvuy.weatherapp.MainWeatherActivity;
 import com.kryvuy.weatherapp.R;
 import com.kryvuy.weatherapp.api.Service_Retrofit;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_1day.Daily_OneDay;
+
+import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -52,5 +57,14 @@ public class SplashActivity extends Activity {
             }
         },SPLASH_DISPLAY_LENGTH);
 
+    }
+
+    public void setLanguages(){
+            Locale myLocale = new Locale("uk_UA");
+            Resources res = getResources();
+            DisplayMetrics dm = res.getDisplayMetrics();
+            Configuration conf = res.getConfiguration();
+            conf.setLocale(myLocale);
+            res.updateConfiguration(conf, dm);
     }
 }
