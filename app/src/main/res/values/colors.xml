@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#ff4081</color>
     <color name="colorDark">#0a0a0a</color>
     <color name="colorDarkLight">#212121</color>
     <color name="colorGray">#303030</color>
@@ -15,10 +15,9 @@
     <color name="temp_min30">#004c87</color>
     <color name="color_direction_wind_row_12">#4b4b4b</color>
 
-
     <color name="gradient_list_night_end">#0b1453</color>
-
     <color name="text_list_day">#1d2563</color>
     <color name="text_list_night">#ffffff</color>
     <color name="text_list__light_day_5day">#ffffff</color>
+    <color name="color_special_dialog_12hours">#ef303f9f</color>
 </resources>

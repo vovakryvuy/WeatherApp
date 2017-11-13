@@ -27,6 +27,7 @@
         <item name="android:textColor">@color/cardview_light_background</item>
         <item name="android:textSize">15sp</item>
     </style>
+
     <style name="TextWithWightShadow">
         <item name="android:textColor">#ffffff</item>
         <item name="android:textSize">10sp</item>

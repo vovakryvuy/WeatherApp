@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/special_toast_conteiner_12hours"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_special_dialog_12hours"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_special_dialog_time_12hours"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="@dimen/special_dialog_inform_text"
+        android:textStyle="bold"
+        tools:text="12:00" />
+
+    <TextView
+        android:id="@+id/text_special_dialog_temp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_special_dialog_time_12hours"
+        android:layout_marginTop="20dp"
+        android:text="@string/string_tts_temperature"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="@dimen/special_dialog_text" />
+
+    <TextView
+        android:id="@+id/text_special_dialog_temperature_12hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/text_special_dialog_temp"
+        android:layout_centerHorizontal="false"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="@dimen/special_dialog_inform_text"
+        android:textStyle="bold"
+        tools:text="+25" />
+
+    <TextView
+        android:id="@+id/text_special_dialog_celsius_12hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/text_special_dialog_temperature_12hours"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/text_special_dialog_temperature_12hours"
+        android:text="@string/string_celsius"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="@dimen/special_dialog_inform_text" />
+
+    <TextView
+        android:id="@+id/text_special_dialog_speedw_12hours"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_special_dialog_temperature_12hours"
+        android:layout_marginTop="20dp"
+        android:text="@string/string_tts_speed_wind"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="@dimen/special_dialog_text" />
+
+    <TextView
+        android:id="@+id/text_special_dialog_speed_wind_12hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/text_special_dialog_speedw_12hours"
+        android:layout_centerHorizontal="false"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="@dimen/special_dialog_inform_text"
+        android:textStyle="bold"
+        tools:text="25" />
+
+    <TextView
+        android:id="@+id/text_special_dialog_k_m_12hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/text_special_dialog_speed_wind_12hours"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/text_special_dialog_speed_wind_12hours"
+        android:text="@string/metric_km_h_string"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="@dimen/special_dialog_text" />
+</RelativeLayout>

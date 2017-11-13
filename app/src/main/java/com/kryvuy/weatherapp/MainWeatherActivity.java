@@ -1,9 +1,12 @@
 package com.kryvuy.weatherapp;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -11,10 +14,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.kryvuy.weatherapp.adapter_for_recycle.AdapterRecycle_12Hour;
 import com.kryvuy.weatherapp.adapter_for_recycle.AdapterRecycle_5Days;
 import com.kryvuy.weatherapp.api.Service_Retrofit;
@@ -22,6 +32,7 @@ import com.kryvuy.weatherapp.control_mesurements.ControlMeasurements;
 import com.kryvuy.weatherapp.data_base.DatabaseWetherFiveDay;
 import com.kryvuy.weatherapp.data_base.DatabaseWetherTwelveHour;
 import com.kryvuy.weatherapp.dialog.DialogSearchCity;
+import com.kryvuy.weatherapp.dialog.DialogSpecialView_12Hours;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_5days.DailyForecast;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_5days.Daily_FiveDay;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.hourly_12hour_model.Hourly_12HourModel;
@@ -57,6 +68,8 @@ public class MainWeatherActivity extends AppCompatActivity
     private Boolean mStatusTTS = false;
     private int mCount_wetherDays = 0;
     private int mCount_wetherHours = 0;
+    private int toastCount = 0;
+    private Toast mToast;
     private Realm mRealm;
     private TextToSpeech mTextToSpeech;
 
@@ -76,26 +89,29 @@ public class MainWeatherActivity extends AppCompatActivity
         mTextToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status != TextToSpeech.ERROR ){
+                if(status != TextToSpeech.ERROR){
                     mTextToSpeech.setLanguage(Locale.getDefault());
                 }
             }
         });
 
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
-        /*
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                /*
         Get Preferenses key City */
-        Intent intent = getIntent();
-        mKeyCity = intent.getStringExtra(MainWeatherActivity.EXTRA_KEY_CITY);
+                Intent intent = getIntent();
+                mKeyCity = intent.getStringExtra(MainWeatherActivity.EXTRA_KEY_CITY);
 
-        //mKeyCity = intent.getStringExtra(EXTRA_KEY_CITY);
-
+                //mKeyCity = intent.getStringExtra(EXTRA_KEY_CITY);
         /*
         save city_key in SharePreferences*/
-        saveCityKeySharedPreferences(intent);
+                saveCityKeySharedPreferences(intent);
+            }
+        }).start();
 
 
         /*
@@ -155,8 +171,16 @@ public class MainWeatherActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         mRealm.close();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mTextToSpeech.stop();
         mTextToSpeech.shutdown();
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_item_toolbar, menu);
@@ -232,28 +256,48 @@ public class MainWeatherActivity extends AppCompatActivity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (mStatusTTS){
+            //Cancel Toast while Toast work
+            if(toastCount >= 1){
+                mToast.cancel();
+                toastCount = 0;
+            }
+            mToast = new Toast(getApplicationContext());
+            toastCount++;
+            //////////////
+
+
+            if(mTextToSpeech.isSpeaking())
+                mTextToSpeech.stop();
+
             switch (keyCode){
                 case KeyEvent.KEYCODE_VOLUME_UP:
                     Log.d(MainActivity.LOG_TAG, "PRESSS BUTTON UP start speech 5Days");
-                        mTextToSpeech.stop();
                         mTextToSpeech.speak(speechAboutDaysWether(mCount_wetherDays % 5)
                                 ,TextToSpeech.QUEUE_FLUSH,null,null);
+
+                    //Special view weather 5 Day
+                    Log.d(MainActivity.LOG_TAG, "onKeyUp: Start Special View 5Day Weather");
+                        viewToastSpecial_Day(mDatabaseWetherFiveDayList.get(mCount_wetherDays%5),mToast);
+
                         mCount_wetherDays++;
                     break;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
                     Log.d(MainActivity.LOG_TAG, "PRESSS BUTTON DOWN start speech 12Hours");
-                        mTextToSpeech.stop();
                         mTextToSpeech.speak(speechAboutHoursWeather(mCount_wetherHours % 12)
                                 , TextToSpeech.QUEUE_FLUSH, null, null);
+
+                        //Special view weather 12 Hours
+                        Log.d(MainActivity.LOG_TAG, "onKeyDown: Start Special View 12Hours Weather");
+                        viewToastSpecial_Hour(mDatabaseWetherTwelveHourList.get(mCount_wetherHours%12),mToast);
                         mCount_wetherHours++;
                     break;
                 default:
                     return super.onKeyDown(keyCode, event);
-
             }
         }
         return true;
     }
+
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP){
@@ -477,6 +521,62 @@ public class MainWeatherActivity extends AppCompatActivity
                 .append(",")
                 .append(mDatabaseWetherFiveDayList.get(i).getNightDiscribe());
         return speech;
+    }
+
+    public void viewToastSpecial_Hour(DatabaseWetherTwelveHour twelveHour,Toast toast){
+        //final Toast toast = new Toast(getApplicationContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_special_wether_12hours,
+                (ViewGroup) findViewById(R.id.special_toast_conteiner_12hours));
+        TextView time = (TextView) view.findViewById(R.id.text_special_dialog_time_12hours);
+        TextView temperature = (TextView) view.findViewById(R.id.text_special_dialog_temperature_12hours);
+        TextView speedWind = (TextView) view.findViewById(R.id.text_special_dialog_speed_wind_12hours);
+
+        time.setText(twelveHour.getTime());
+        temperature.setText(String.valueOf(twelveHour.getTemperature()));
+        speedWind.setText(String.valueOf(twelveHour.getSpeedWind()));
+
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(view);
+        toast.show();
+       /* Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toast.cancel();
+            }
+        }, 10000);*/
+    }
+
+    public void viewToastSpecial_Day(DatabaseWetherFiveDay fiveDay,Toast toast){
+        //final Toast toast = new Toast(getApplicationContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_special_wether_5days,
+                (ViewGroup) findViewById(R.id.special_toast_conteiner_5days));
+
+        TextView date = (TextView) view.findViewById(R.id.dialog_special_date_5day);
+        TextView dayTemperatura = (TextView) view.findViewById(R.id.dialog_special_temperature_day_5day);
+        TextView nightTemperatura = (TextView) view.findViewById(R.id.dialog_special_temperature_night_5day);
+        TextView dayPrecipation = (TextView) view.findViewById(R.id.dialog_special_precipation_day_5day);
+        TextView nightPrecipation = (TextView) view.findViewById(R.id.dialog_special_precipation_night_5day);
+        TextView dayDiscribe = (TextView) view.findViewById(R.id.dialog_special_discribe_day_5day);
+        TextView nightDiscribe = (TextView) view.findViewById(R.id.dialog_special_discribe_night_5day);
+
+
+        String dateIn = fiveDay.getData();
+        date.setText(dateIn.substring(0,3)+","+ dateIn.split(",")[1]);
+        dayTemperatura.setText(String.valueOf(fiveDay.getDayTemperature()));
+        nightTemperatura.setText(String.valueOf(fiveDay.getNightTemperature()));
+        dayPrecipation.setText(String.valueOf(fiveDay.getDayPrecipation()));
+        nightPrecipation.setText(String.valueOf(fiveDay.getDayPrecipation()));
+        dayDiscribe.setText(fiveDay.getDayDiscribe());
+        nightDiscribe.setText(fiveDay.getNightDiscribe());
+
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(view);
+        toast.show();
     }
 
     private void saveCityKeySharedPreferences(Intent intent){

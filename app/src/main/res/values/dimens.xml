@@ -12,4 +12,6 @@
     <dimen name="text_size_temperature">18sp</dimen>
     <dimen name="text_describe_width_list_5day">100dp</dimen>
     <dimen name="text_describe_hight_list_5day">27dp</dimen>
+    <dimen name="special_dialog_inform_text">70sp</dimen>
+    <dimen name="special_dialog_text">50sp</dimen>
 </resources>
