@@ -13,4 +13,5 @@ public class Constant {
     public static final String LANGUAGE_UA = "uk-ua";
     public static final String SAVE_CITY_KEY = "save_city_key";
     public static final String EXTRA_KEY_LOCATION_CITY = "com.kryvuy.weatherapp.start.Constant";
+    public static final String SAVE_NAME_CITY = "save_name_city";
 }

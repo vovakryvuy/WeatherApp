@@ -15,7 +15,7 @@
         android:paddingBottom="@dimen/backdown_2dp_list_5day"
         android:paddingTop="@dimen/backdown_2dp_list_5day"
         android:background="@drawable/gradient_color_date_list5day"
-        android:textAlignment="viewStart"
+        android:textAlignment="center"
         tools:text="Пятниця, 25 листопада."
         android:textSize="@dimen/text_size_list_5day"
         android:textColor="@color/gradient_list_night_end"/>
@@ -78,6 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
             android:text="@string/text_string_opadu"
             android:textColor="@color/text_list_day"
             android:textSize="12sp" />
@@ -86,13 +87,13 @@
             android:id="@+id/text_seed_wind_day_list5day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="20km/h"
-            android:textColor="@color/text_list_day"
-            android:textSize="12sp"
+            android:layout_above="@+id/text_describe_day_list5day"
+            android:layout_alignEnd="@+id/textView5"
             android:paddingLeft="22dp"
             android:paddingRight="@dimen/backdown_2dp_list_5day"
-            android:layout_above="@+id/text_describe_day_list5day"
-            android:layout_toEndOf="@+id/image_list_5day_icon_day"/>
+            android:textColor="@color/text_list_day"
+            android:textSize="12sp"
+            tools:text="20km/h" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -118,6 +119,7 @@
             android:translationY="-6dp"
             android:translationX="-1dp"
             android:tint="@color/text_list_day"
+            android:layout_marginLeft="10dp"
             android:layout_above="@+id/text_describe_day_list5day"
             android:layout_toEndOf="@+id/image_list_5day_icon_day"
             tools:ignore="ContentDescription" />
@@ -157,6 +159,7 @@
             android:translationX="-1dp"
             android:layout_above="@+id/text_describe_night_list5day"
             android:layout_toEndOf="@+id/image_list_5day_icon_night"
+            android:layout_marginLeft="10dp"
             android:tint="@color/text_list_night"
             tools:ignore="ContentDescription" />
 
@@ -164,13 +167,13 @@
             android:id="@+id/text_seed_wind_night_list5day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="20km/h"
-            android:textSize="12sp"
-            android:textColor="@color/text_list_night"
+            android:layout_above="@+id/text_describe_night_list5day"
+            android:layout_alignEnd="@+id/textView6"
             android:paddingLeft="22dp"
             android:paddingRight="@dimen/backdown_2dp_list_5day"
-            android:layout_above="@+id/text_describe_night_list5day"
-            android:layout_toEndOf="@+id/image_list_5day_icon_night"/>
+            android:textColor="@color/text_list_night"
+            android:textSize="12sp"
+            tools:text="20km/h" />
 
         <TextView
             android:id="@+id/temperature_min_5day"
@@ -223,6 +226,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:text="@string/text_string_opadu"
+            android:layout_marginRight="10dp"
             android:textColor="@color/text_list_night"
             android:textSize="12sp" />
 

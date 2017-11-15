@@ -78,6 +78,8 @@ public class DialogSearchCity extends DialogFragment {
         }
 
     }
+
+
     private int getScreenWidthInDPs(Context context){
         DisplayMetrics dm = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) context.getSystemService(WINDOW_SERVICE);

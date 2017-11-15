@@ -3,6 +3,8 @@ package com.kryvuy.weatherapp.api;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_1day.Daily_OneDay;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.daily_5days.Daily_FiveDay;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.hourly_12hour_model.Hourly_12HourModel;
+import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.locations.geoposition.GeopositionSearchModel;
+import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.locations.ip_address.PositionIPAddressModel;
 import com.kryvuy.weatherapp.model_response_for_parse.search_city_list.model_response.search_city.SearchCityByName;
 
 import java.util.List;
@@ -43,4 +45,18 @@ public interface Interface_Response {
     Call<List<Hourly_12HourModel>> getHourly_12Hour(@Path("key_location")String key_city,
                                                     @Query("apikey") String api, @Query("language") String language,
                                                     @Query("details") Boolean detail, @Query("metric") Boolean metric);
+
+    /*
+    get location for GPS*/
+    @GET("locations/v1/cities/geoposition/search")
+    Call<GeopositionSearchModel> getGeoposition(@Query("apikey") String api, @Query("q") String lat_lon,
+                                                @Query("language") String language, @Query("details") Boolean detail,
+                                                @Query("toplevel") Boolean toplevel);
+
+    /*
+    get location for ip address*/
+    @GET("locations/v1/cities/ipaddress")
+    Call<PositionIPAddressModel> getLocationIP(@Query("apikey") String api, @Query("q") String ip,
+                                               @Query("language") String language, @Query("details") Boolean detail);
+
 }

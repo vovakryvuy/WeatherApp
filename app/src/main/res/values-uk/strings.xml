@@ -17,4 +17,5 @@
     <string name="string_tts_tomorrow">завтра</string>
     <string name="string_tts_on_day">в день</string>
     <string name="string_tts_in_the_night">в ночі</string>
+    <string name="string_text_data_updated">дані оновлені</string>
 </resources>

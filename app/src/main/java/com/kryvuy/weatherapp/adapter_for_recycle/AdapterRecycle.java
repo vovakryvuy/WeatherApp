@@ -1,5 +1,6 @@
 package com.kryvuy.weatherapp.adapter_for_recycle;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -68,22 +69,32 @@ public class AdapterRecycle extends RecyclerView.Adapter<AdapterRecycle.ViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(MainActivity.LOG_TAG,
-                        "Натиснуто = "+posit+"місто = "+mListCityNames.get(posit));
-                if(mKeyCity!=null){
-                    /*Intent intent = new Intent(mContext,Activity_OneDayWeather.class);
-                    intent.putExtra(Activity_OneDayWeather.EXTRA_KEY_LOCATION_CITY,mKeyCity.get(posit));
-                    intent.putExtra(Activity_OneDayWeather.EXTRA_NAME_CITY,mListCityNames.get(posit));
-                    intent.putExtra(Activity_OneDayWeather.EXTRA_NAME_COUNTRY,mListCountry.get(posit));
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(intent);*/
+                Log.d(MainActivity.LOG_TAG, "Натиснуто = "+posit+"місто = "+mListCityNames.get(posit));
 
-                    Intent intent = new Intent(mContext,MainWeatherActivity.class);
-                    intent.putExtra(Constant.EXTRA_KEY_LOCATION_CITY,mKeyCity.get(posit));
-                    //intent.putExtra(Activity_OneDayWeather.EXTRA_NAME_CITY,mListCityNames.get(posit));
-                    //intent.putExtra(Activity_OneDayWeather.EXTRA_NAME_COUNTRY,mListCountry.get(posit));
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(intent);
+                if(mKeyCity!=null){
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences(Constant.SAVE_NAME_CITY
+                            ,Context.MODE_PRIVATE);
+                    SharedPreferences sharedPreferencesKey = mContext.getSharedPreferences(Constant.SAVE_CITY_KEY
+                            ,Context.MODE_PRIVATE);
+
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString(Constant.SAVE_NAME_CITY, mListCityNames.get(posit));
+                        editor.apply();
+
+                        SharedPreferences.Editor editor1 = sharedPreferencesKey.edit();
+                        editor1.putString(Constant.SAVE_CITY_KEY, mKeyCity.get(posit));
+                        editor1.apply();
+
+                    if(mContext instanceof MainActivity){
+                        Intent intent = new Intent(mContext,MainWeatherActivity.class);
+                        intent.putExtra(Constant.EXTRA_KEY_LOCATION_CITY,mKeyCity.get(posit));
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
+                    }else {
+                        Activity activity = (Activity) mContext;
+                        activity.setResult(Activity.RESULT_OK);
+                        activity.onBackPressed();
+                    }
                 }
             }
         });
@@ -107,4 +118,9 @@ public class AdapterRecycle extends RecyclerView.Adapter<AdapterRecycle.ViewHold
     public int getItemCount() {
         return mListCityNames.size();
     }
+
+    public void saveNameCitySharePreferences(){
+
+    }
+
 }

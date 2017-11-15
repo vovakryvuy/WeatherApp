@@ -1,4 +1,5 @@
 package com.kryvuy.weatherapp;
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +57,8 @@ import retrofit2.Response;
 public class MainWeatherActivity extends AppCompatActivity
         implements MenuItemCompat.OnActionExpandListener,SearchView.OnQueryTextListener{
     public static final String EXTRA_KEY_CITY = "com.kryvuy.weatherapp.MainWeatherActivity.EXTRA_KEY_CITY";
+    public static final int REAULT_FOR_ACTIVITY_SERACH_CITY = 1;
+    private Bundle saveInstanceState_second;
     private RecyclerView mRecyclerViewHours;
     private RecyclerView mRecyclerViewDays;
     private String mKeyCity;
@@ -70,20 +73,23 @@ public class MainWeatherActivity extends AppCompatActivity
     private int mCount_wetherHours = 0;
     private int toastCount = 0;
     private Toast mToast;
+    private Toolbar mToolbar;
     private Realm mRealm;
     private TextToSpeech mTextToSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        saveInstanceState_second = savedInstanceState;
         setContentView(R.layout.activity_wether_main_layout);
         Log.d(MainActivity.LOG_TAG,"-----------START------------");
         /*
         inizializi RealmDataBase*/
-            mRealm = Realm.getDefaultInstance();
+        Realm.init(this);
+        mRealm = Realm.getDefaultInstance();
         /*
         create weather list for TTS*/
-            createWetherListForTTS();
+        createWetherListForTTS();
         /*
         inizializi TextToSpeech*/
         mTextToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -95,23 +101,16 @@ public class MainWeatherActivity extends AppCompatActivity
             }
         });
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
-        setSupportActionBar(toolbar);
+        /*Get Preferenses key City */
+        Intent intent = getIntent();
+        mKeyCity = intent.getStringExtra(MainWeatherActivity.EXTRA_KEY_CITY);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                /*
-        Get Preferenses key City */
-                Intent intent = getIntent();
-                mKeyCity = intent.getStringExtra(MainWeatherActivity.EXTRA_KEY_CITY);
+        //mKeyCity = intent.getStringExtra(EXTRA_KEY_CITY);
+        //save city_key in SharePreferences*/
+        saveCityKeySharedPreferences(intent);
 
-                //mKeyCity = intent.getStringExtra(EXTRA_KEY_CITY);
-        /*
-        save city_key in SharePreferences*/
-                saveCityKeySharedPreferences(intent);
-            }
-        }).start();
+        //init and view city name in Toolbar Title with SharePreferences
+        initToolbar();
 
 
         /*
@@ -216,26 +215,10 @@ public class MainWeatherActivity extends AppCompatActivity
     public boolean onQueryTextSubmit(String query) {
         Log.d(MainActivity.LOG_TAG, "MainWeatherActivity  onQueryTextSubmit: "+query);
         if( query!=null && !query.isEmpty() ) {
-            mListCity_CountryName.clear();
-            Service_Retrofit.getService().getListCities(Constant.API_KEY, query, Constant.LANGUAGE)
-                    .enqueue(new Callback<List<SearchCityByName>>() {
-                        @Override
-                        public void onResponse(Call<List<SearchCityByName>> call, Response<List<SearchCityByName>> response) {
-                           /*
-                                put city name and country*/
-                            getCityAndCounrty(response.body());
-                            if (!mListCity_CountryName.isEmpty()) {
-                                /*
-                                create list with contry and city in dialogFragment*/
-                                createListForCityContry();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<SearchCityByName>> call, Throwable t) {
-
-                        }
-                    });
+            Intent intent = new Intent(MainWeatherActivity.this,ActivityListCity.class);
+            intent.putExtra(ActivityListCity.EXTRA_STRING_FOR_SEARCH_CITY,query);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivityForResult(intent,REAULT_FOR_ACTIVITY_SERACH_CITY);
         }
 
         return true;
@@ -246,12 +229,61 @@ public class MainWeatherActivity extends AppCompatActivity
         return true;
     }
 
-    private void getCityAndCounrty(List<SearchCityByName> listCity){
-        for (SearchCityByName searchCityByName : listCity) {
-            mListCity_CountryName.add(getString(R.string._text_city) +" "+ searchCityByName.getLocalizedName()+"\n"+
-            getString(R.string._text_country) +" "+ searchCityByName.getCountry().getLocalizedName());
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REAULT_FOR_ACTIVITY_SERACH_CITY && resultCode == Activity.RESULT_OK){
+            Log.d(MainActivity.LOG_TAG, "onActivityResult: "+resultCode);
+            Log.d(MainActivity.LOG_TAG, "SANGE data after change city: -------");
+
+            Service_Retrofit.getService().getDaily_5Day(mKeyCity,Constant.API_KEY,Constant.LANGUAGE_UA,true,true)
+                    .enqueue(new Callback<Daily_FiveDay>() {
+                        @Override
+                        public void onResponse(Call<Daily_FiveDay> call, Response<Daily_FiveDay> response) {
+                            mRecyclerViewDays.setAdapter(new AdapterRecycle_5Days(response.body(),getApplicationContext()));
+                        /*
+                        save five days in database*/
+                            saveFiveDayInDatabaseRealm(response.body());
+                        }
+                        @Override
+                        public void onFailure(Call<Daily_FiveDay> call, Throwable t) {
+                            Log.d(MainActivity.LOG_TAG, "onFailure: "+t.getMessage()+ " open realm and push data");
+                            mRecyclerViewDays.setAdapter(new AdapterRecycle_5Days(null,getApplicationContext()));
+                        }
+                    });
+
+            Service_Retrofit.getService().getHourly_12Hour(mKeyCity,Constant.API_KEY,Constant.LANGUAGE_UA,true,true)
+                    .enqueue(new Callback<List<Hourly_12HourModel>>() {
+                        @Override
+                        public void onResponse(Call<List<Hourly_12HourModel>> call, Response<List<Hourly_12HourModel>> response) {
+
+                            mRecyclerViewHours.setAdapter(new AdapterRecycle_12Hour(response.body(),getApplicationContext()));
+                        /*
+                        save twelve hours in database*/
+                            try {
+                                saveTwelveHoursInDatabaseRealm(response.body());
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            Toast.makeText(getApplicationContext(),getApplicationContext()
+                                            .getResources()
+                                            .getText(R.string.string_text_data_updated), Toast.LENGTH_LONG)
+                                    .show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<Hourly_12HourModel>> call, Throwable t) {
+                            Log.d(MainActivity.LOG_TAG, "onFailure: "+t.getMessage()+ " open realm and push data");
+                            mRecyclerViewHours.setAdapter(new AdapterRecycle_12Hour(null,getApplicationContext()));
+                        }
+                    });
+            //init and view city name in Toolbar Title with SharePreferences
+            initToolbar();
+
+            createWetherListForTTS();
         }
     }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -264,8 +296,6 @@ public class MainWeatherActivity extends AppCompatActivity
             mToast = new Toast(getApplicationContext());
             toastCount++;
             //////////////
-
-
             if(mTextToSpeech.isSpeaking())
                 mTextToSpeech.stop();
 
@@ -462,14 +492,16 @@ public class MainWeatherActivity extends AppCompatActivity
     }
 
     public void createWetherListForTTS(){
-        if (mRealm.where(DatabaseWetherTwelveHour.class).isValid() && mRealm.where(DatabaseWetherFiveDay.class).isValid()){
-            mDatabaseWetherFiveDayList = mRealm.where(DatabaseWetherFiveDay.class).findAll();
-            mDatabaseWetherTwelveHourList = mRealm.where(DatabaseWetherTwelveHour.class).findAll();
-            mStatusTTS = true;
-        }else{
-            mStatusTTS = false;
-        }
+                if (mRealm.where(DatabaseWetherTwelveHour.class).isValid() && mRealm.where(DatabaseWetherFiveDay.class).isValid()){
+                    mDatabaseWetherFiveDayList = mRealm.where(DatabaseWetherFiveDay.class).findAll();
+                    mDatabaseWetherTwelveHourList = mRealm.where(DatabaseWetherTwelveHour.class).findAll();
+                    mStatusTTS = true;
+                }else{
+                    mStatusTTS = false;
+                }
     }
+
+
 
     public StringBuilder speechAboutHoursWeather(int i){
         Context context = getApplicationContext();
@@ -588,6 +620,19 @@ public class MainWeatherActivity extends AppCompatActivity
             editor.apply();
         }
     }
+
+    private void initToolbar(){
+                //init and view city name in Toolbar Title with SharePreferences
+                SharedPreferences sharedPreferences = getSharedPreferences(Constant.SAVE_NAME_CITY, Context.MODE_PRIVATE);
+                String city_name = sharedPreferences.getString(Constant.SAVE_NAME_CITY, "");
+                mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+                mToolbar.dismissPopupMenus();
+                if(city_name!=null)
+                    setTitle(city_name);
+                setSupportActionBar(mToolbar);
+
+    }
+
 }
 
 

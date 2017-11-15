@@ -24,7 +24,7 @@
     </style>
     <style name="MyDialogFragment.SearchCity" parent="@android:style/Theme.Dialog">
         <item name="android:background">@drawable/corner_dialog_fragment_search_city</item>
-        <item name="android:textColor">@color/cardview_light_background</item>
+        <item name="android:textColor">@color/text_list_night</item>
         <item name="android:textSize">15sp</item>
     </style>
 
