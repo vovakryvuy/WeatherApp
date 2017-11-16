@@ -1,14 +1,20 @@
 package com.kryvuy.weatherapp;
+
+import android.Manifest;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -55,13 +61,15 @@ import retrofit2.Response;
  */
 
 public class MainWeatherActivity extends AppCompatActivity
-        implements MenuItemCompat.OnActionExpandListener,SearchView.OnQueryTextListener{
+        implements MenuItemCompat.OnActionExpandListener, SearchView.OnQueryTextListener {
     public static final String EXTRA_KEY_CITY = "com.kryvuy.weatherapp.MainWeatherActivity.EXTRA_KEY_CITY";
+    public static final String EXTRA_NAME_CITY = "MainWeatherActivity.EXTRA_NAME_CITY";
     public static final int REAULT_FOR_ACTIVITY_SERACH_CITY = 1;
     private Bundle saveInstanceState_second;
     private RecyclerView mRecyclerViewHours;
     private RecyclerView mRecyclerViewDays;
     private String mKeyCity;
+    private String mNameCity;
     private MenuItem searchMenuItem;
     private SearchView searchView;
     private DialogSearchCity mDialogFragment = new DialogSearchCity();
@@ -78,11 +86,12 @@ public class MainWeatherActivity extends AppCompatActivity
     private TextToSpeech mTextToSpeech;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         saveInstanceState_second = savedInstanceState;
         setContentView(R.layout.activity_wether_main_layout);
-        Log.d(MainActivity.LOG_TAG,"-----------START------------");
+        Log.d(MainActivity.LOG_TAG, "-----------START------------");
+
         /*
         inizializi RealmDataBase*/
         Realm.init(this);
@@ -104,6 +113,7 @@ public class MainWeatherActivity extends AppCompatActivity
         /*Get Preferenses key City */
         Intent intent = getIntent();
         mKeyCity = intent.getStringExtra(MainWeatherActivity.EXTRA_KEY_CITY);
+        mNameCity = intent.getStringExtra(MainWeatherActivity.EXTRA_NAME_CITY);
 
         //mKeyCity = intent.getStringExtra(EXTRA_KEY_CITY);
         //save city_key in SharePreferences*/
@@ -133,7 +143,11 @@ public class MainWeatherActivity extends AppCompatActivity
                         mRecyclerViewDays.setAdapter(new AdapterRecycle_5Days(response.body(),getApplicationContext()));
                         /*
                         save five days in database*/
-                        saveFiveDayInDatabaseRealm(response.body());
+                        if(response.body().getDailyForecasts() == null){
+                            mRecyclerViewDays.setAdapter(new AdapterRecycle_5Days(null,getApplicationContext()));
+                        }else {
+                            saveFiveDayInDatabaseRealm(response.body());
+                        }
                     }
                     @Override
                     public void onFailure(Call<Daily_FiveDay> call, Throwable t) {
@@ -150,10 +164,14 @@ public class MainWeatherActivity extends AppCompatActivity
                         mRecyclerViewHours.setAdapter(new AdapterRecycle_12Hour(response.body(),getApplicationContext()));
                         /*
                         save twelve hours in database*/
-                        try {
-                            saveTwelveHoursInDatabaseRealm(response.body());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                        if(response.body().iterator().next().getDateTime() == null){
+                            mRecyclerViewHours.setAdapter(new AdapterRecycle_12Hour(null,getApplicationContext()));
+                        }else {
+                            try {
+                                saveTwelveHoursInDatabaseRealm(response.body());
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
 
@@ -308,7 +326,7 @@ public class MainWeatherActivity extends AppCompatActivity
                     //Special view weather 5 Day
                     Log.d(MainActivity.LOG_TAG, "onKeyUp: Start Special View 5Day Weather");
                         viewToastSpecial_Day(mDatabaseWetherFiveDayList.get(mCount_wetherDays%5),mToast);
-
+                        mRecyclerViewDays.onScrolled((mCount_wetherDays%5)*50,0);
                         mCount_wetherDays++;
                     break;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
@@ -377,11 +395,14 @@ public class MainWeatherActivity extends AppCompatActivity
             Log.d(MainActivity.LOG_TAG,"nightTemperature = "
                     +dailyForecast.getTemperature().getMinimum().getValue());
 
-            databaseWetherFiveDay.setDayDiscribe(dailyForecast.getDay().getShortPhrase());
+            databaseWetherFiveDay.setDayDiscribe(dailyForecast.getDay().getShortPhrase()
+                    //delete errror string
+                    .replace("вряди-годи",""));
             Log.d(MainActivity.LOG_TAG,"dayDiscribe = "
                     +dailyForecast.getDay().getShortPhrase());
 
-            databaseWetherFiveDay.setNightDiscribe(dailyForecast.getNight().getShortPhrase());
+            databaseWetherFiveDay.setNightDiscribe(dailyForecast.getNight().getShortPhrase()
+                    .replace("вряди-годи",""));
             Log.d(MainActivity.LOG_TAG,"nightDiscribe = "
                     +dailyForecast.getNight().getShortPhrase());
 
@@ -627,8 +648,13 @@ public class MainWeatherActivity extends AppCompatActivity
                 String city_name = sharedPreferences.getString(Constant.SAVE_NAME_CITY, "");
                 mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
                 mToolbar.dismissPopupMenus();
-                if(city_name!=null)
+                if(city_name!=null && !city_name.equals("")){
                     setTitle(city_name);
+                }else{
+                    if(mNameCity!=null){
+                        setTitle(mNameCity);
+                    }
+                }
                 setSupportActionBar(mToolbar);
 
     }

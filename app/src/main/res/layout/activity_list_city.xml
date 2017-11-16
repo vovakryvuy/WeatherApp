@@ -18,7 +18,8 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycle_view_list_city"
-        android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="@color/color_special_dialog_12hours"
+        android:scrollbars="vertical" />
 </LinearLayout>

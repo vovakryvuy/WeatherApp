@@ -205,14 +205,14 @@ public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5D
     private List<String> getDescribeDay(List<DailyForecast> dailyForecasts){
         List<String> list = new ArrayList<>();
         for (DailyForecast dailyForecast : dailyForecasts) {
-            list.add(dailyForecast.getDay().getShortPhrase());
+            list.add(dailyForecast.getDay().getShortPhrase().replace("вряди-годи",""));
         }
         return list;
     }
     private List<String> getDescribeNight(List<DailyForecast> dailyForecasts){
         List<String> list = new ArrayList<>();
         for (DailyForecast dailyForecast : dailyForecasts) {
-            list.add(dailyForecast.getNight().getShortPhrase());
+            list.add(dailyForecast.getNight().getShortPhrase().replace("вряди-годи",""));
         }
         return list;
     }
@@ -251,4 +251,5 @@ public class AdapterRecycle_5Days extends RecyclerView.Adapter<AdapterRecycle_5D
         }
         return list;
     }
+
 }
